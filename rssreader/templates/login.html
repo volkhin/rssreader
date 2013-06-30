@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+<style>
+    body { background-color: #f5f5f5; }
+    .form-signin { width: 300px; background-color: #fff; padding: 20px; border:
+    1px #ddd solid; margin: 40px auto; text-align: center; }
+</style>
+{% endblock %}
+
+{% block body %}
+<form class="form-signin" action="{{ url_for('.login') }}" method="post">
+    <input type="text" class="input-block-level" name="login" placeholder="Login">
+    <input type="password" class="input-block-level" name="password" placeholder="Password">
+    <button class="btn btn-large btn-primary" type="submit">Log in</button>
+</form>
+{% endblock %}

@@ -16,15 +16,11 @@ setup(
         install_requires=[
             'Flask',
             'Flask-SQLAlchemy',
-            'Flask-WTF',
-            'Flask-Script',
-            'Flask-Babel',
-            'Flask-Testing',
-            'Flask-Mail',
-            'Flask-Cache',
             'Flask-Login',
-            'Flask-OpenID',
+            'Flask-Script',
             'nose',
+            'opml',
+            'feedparser',
             ],
         classifiers=[
             'Environment :: Web Environment',

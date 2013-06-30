@@ -1,49 +1,55 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-from flask import Flask, render_template
-import opml
-import feedparser
+from flask import Flask, render_template, Blueprint, request, flash, redirect, url_for
+from flask.ext.login import login_required, login_user, logout_user
 
-from database import db_session, init_db
 from .models import FeedEntry, Feed, User
+from .config import DefaultConfig
+from .extensions import db, login_manager
 
-from .extensions import db
+# ALL = ['create_app']
+main_blueprint = Blueprint('main', __name__)
+blueprints = (main_blueprint,)
 
-ALL = ['create_app']
-
-def fetch_feeds():
-    outline = opml.parse("subscriptions.xml")
-    for entry in outline:
-        rss_url = entry.xmlUrl
-        print rss_url
-        data = feedparser.parse(rss_url)
-        print data.version
-        for entry in data.entries:
-            title = entry.title
-            content = entry.get('summary', '')
-            for part in entry.get('content', []):
-                content += part.value
-            feed_entry = FeedEntry(title, content)
-            db_session.add(feed_entry)
-        db_session.commit()
-
-@app.route('/')
+@main_blueprint.route('/')
+@login_required
 def index():
-    # fetch_feeds()
     entries = FeedEntry.query.all()
     return render_template('index.html', entries=entries)
     output = '<br/>'.join(entry.title for entry in entries)
     return output
 
-def create_app():
-    app = Flask(__name__, static_folder='static')
+@main_blueprint.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        print dir(request)
+        user, authenticated = User.authenticate(
+                request.form['login'], request.form['password'])
+        if user and authenticated:
+            flash('Authenticated as {}'.format(user.login))
+            login_user(user)
+        else:
+            flash('Wrong auth data')
+        return redirect(url_for('.index'))
+    return render_template('login.html')
+
+@main_blueprint.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('.login'))
+
+def create_app(app_name=None):
+    if app_name is None:
+        app_name = DefaultConfig.PROJECT
+
+    app = Flask(app_name)
+    app.config.from_object(DefaultConfig)
+    for blueprint in blueprints:
+        app.register_blueprint(blueprint)
     db.init_app(app)
-    app.config.from_object(__name__)
+    @login_manager.user_loader
+    def load_user(id):
+        return User.query.get(id)
+    login_manager.init_app(app)
     return app
-
-if __name__ == "__main__":
-    app = create_app()
-    init_db()
-    app.run(debug=True)
-
