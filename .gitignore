@@ -1,0 +1,5 @@
+build
+env
+rssreader.egg-info
+dist
+venv

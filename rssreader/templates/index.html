@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% block body %}
+<script>
+    function toggle(id) {
+        $('#' + id).slideToggle();
+        /* var e = document.getElementById(id);
+        if (e.style.display == 'block') {
+            e.style.display = 'none';
+        } else {
+            e.style.display = 'block';
+        } */
+    }
+</script>
+<ul>
+{% for entry in entries %}
+<li>{{ entry.id }} <a onclick="toggle('content{{ entry.id }}')">{{ entry.title }}</a></li>
+<p style="display:none" id="content{{ entry.id }}">
+{{ entry.content }}
+</p>
+{% endfor %}
+</ul>
+{% endblock %}

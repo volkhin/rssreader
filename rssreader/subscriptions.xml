@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+    <head>
+        <title>Artem: подписки в Google Reader</title>
+    </head>
+    <body>
+        <outline text="Every day matters" title="Every day matters"
+            type="rss" xmlUrl="http://larrr.com/feed/rss/" htmlUrl="http://larrr.com"/>
+        <outline text="mnmlist" title="mnmlist" type="rss"
+            xmlUrl="http://feeds.feedburner.com/mnmlist" htmlUrl="http://mnmlist.com"/>
+        <outline text="Synderesis Blog" title="Synderesis Blog"
+            type="rss" xmlUrl="http://feeds.feedburner.com/Synderesis" htmlUrl="http://synderesis.ru"/>
+        <outline text="You Are Not So Smart"
+            title="You Are Not So Smart" type="rss"
+            xmlUrl="http://youarenotsosmart.com/feed/" htmlUrl="http://youarenotsosmart.com"/>
+        <outline text="You are not so smart."
+            title="You are not so smart." type="rss"
+            xmlUrl="http://feeds.feedburner.com/YouAreNotSoSmartRu" htmlUrl="http://youarenotsosmart.ru"/>
+        <outline text="Блог Петра Диденко" title="Блог Петра Диденко"
+            type="rss" xmlUrl="http://feeds2.feedburner.com/pdidenko" htmlUrl="http://www.kip.ru/realtime/"/>
+        <outline text="Блог счастливого мечтателя"
+            title="Блог счастливого мечтателя" type="rss"
+            xmlUrl="http://feeds.feedburner.com/happydreamer" htmlUrl="http://happydreamer.ru"/>
+        <outline text="Дневник перелетной птицы"
+            title="Дневник перелетной птицы" type="rss"
+            xmlUrl="http://nervo4ka.livejournal.com/data/atom" htmlUrl="http://nervo4ka.livejournal.com/"/>
+        <outline text="Если вспомню" title="Если вспомню" type="rss"
+            xmlUrl="http://feeds.feedburner.com/ifiremember" htmlUrl="http://ifiremember.blogspot.com/"/>
+        <outline text="Жить интересно!" title="Жить интересно!"
+            type="rss" xmlUrl="http://feeds.feedburner.com/ap428" htmlUrl="http://petrosian.ru"/>
+        <outline text="Мысли, фотографии и дороги"
+            title="Мысли, фотографии и дороги" type="rss"
+            xmlUrl="http://skitalets.livejournal.com/data/atom" htmlUrl="http://skitalets.livejournal.com/"/>
+        <outline text="Привычка не думать" title="Привычка не думать"
+            type="rss" xmlUrl="http://feeds.feedburner.com/my-tribune" htmlUrl="http://my-tribune.blogspot.com/"/>
+        <outline text="Цукерберг Позвонит!" title="Цукерберг Позвонит!"
+            type="rss" xmlUrl="http://feeds.feedburner.com/siliconrus" htmlUrl="http://www.siliconrus.com"/>
+    </body>
+</opml>
