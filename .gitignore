@@ -4,3 +4,4 @@ rssreader.egg-info
 dist
 venv
 .ropeproject
+test.db
