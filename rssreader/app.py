@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
-
 from flask import Flask, render_template, Blueprint, request, flash, redirect, url_for
 from flask.ext.login import login_required, login_user, logout_user
 
-from .models import FeedEntry, Feed, User
 from .config import DefaultConfig
 from .extensions import db, login_manager
+from .models import FeedEntry, User
+from .forms import LoginForm
+
 
 # ALL = ['create_app']
 main_blueprint = Blueprint('main', __name__)
@@ -22,17 +23,17 @@ def index():
 
 @main_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        print dir(request)
-        user, authenticated = User.authenticate(
-                request.form['login'], request.form['password'])
+    form = LoginForm(request.form)
+    if form.validate_on_submit():
+        user, authenticated = User.authenticate(form.login.data,
+                form.password.data)
         if user and authenticated:
             flash('Authenticated as {}'.format(user.login))
             login_user(user)
         else:
-            flash('Wrong auth data')
+            flash('Invalid login', 'error')
         return redirect(url_for('.index'))
-    return render_template('login.html')
+    return render_template('login.html', form=form)
 
 @main_blueprint.route('/logout')
 def logout():
@@ -42,7 +43,6 @@ def logout():
 def create_app(app_name=None):
     if app_name is None:
         app_name = DefaultConfig.PROJECT
-
     app = Flask(app_name)
     app.config.from_object(DefaultConfig)
     for blueprint in blueprints:
