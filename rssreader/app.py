@@ -5,20 +5,16 @@ from flask.ext.login import login_required, current_user
 from .config import DefaultConfig
 from .extensions import db, login_manager
 from user import user_blueprint, User
-from feed import Feed, FeedEntry
+from feed import Feed, FeedEntry, feed_blueprint
 
 
 ALL = ['create_app']
 main_blueprint = Blueprint('main', __name__)
-blueprints = (main_blueprint, user_blueprint)
+blueprints = (main_blueprint, user_blueprint, feed_blueprint)
 
 @main_blueprint.route('/')
 def index():
-    if current_user.is_authenticated:
-        entries = FeedEntry.query.join(Feed).filter_by(user_id=current_user.get_id()).all()
-    else:
-        entries = []
-    return render_template('index.html', entries=entries)
+    return redirect(url_for('feeds.index'))
 
 def create_app(app_name=None):
     if app_name is None:

@@ -6,12 +6,24 @@
     }
 </script>
 <h1>Newsfeed</h1>
-<ul>
-{% for entry in entries %}
-<li>{{ entry.id }} <a onclick="toggle('content{{ entry.id }}')">{{ entry.title }}</a></li>
-<div style="display:none" id="content{{ entry.id }}">
-{{ entry.content|safe }}
+<div class="row">
+    <div class="span3">
+        <ul class="nav nav-list">
+            <li><a href="{{ url_for('feeds.index') }}">All items</a>
+            {% for feed in feeds %}
+            <li><a href="{{ url_for('feeds.single_feed', feed_id=feed.id) }}">{{ feed.url }}</a>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="span9">
+        <ul>
+            {% for entry in entries %}
+            <li>{{ entry.id }} <a onclick="toggle('content{{ entry.id }}')">{{ entry.title }}</a></li>
+            <div style="display:none" id="content{{ entry.id }}">
+                {{ entry.content|safe }}
+            </div>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
-{% endfor %}
-</ul>
 {% endblock %}
