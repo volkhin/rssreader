@@ -4,6 +4,10 @@ from setuptools import setup
 
 project = "rssreader"
 
+with open('requirements.txt') as f:
+    install_requires = [x.strip() for x in f.readlines()]
+    install_requires = [x for x in install_requires if x]
+
 setup(
         name=project,
         version='0.1',
@@ -13,16 +17,7 @@ setup(
         packages=["rssreader"],
         include_package_data=True,
         zip_safe=False,
-        install_requires=[
-            'Flask',
-            'Flask-SQLAlchemy',
-            'Flask-Login',
-            'Flask-WTF',
-            'Flask-Script',
-            'nose',
-            'opml',
-            'feedparser',
-            ],
+        install_requires=install_requires,
         classifiers=[
             'Environment :: Web Environment',
             'Intended Audience :: Developers',
