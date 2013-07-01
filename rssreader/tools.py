@@ -1,24 +1,21 @@
-#!/usr/bin/env python
 #-*- coding: utf-8 -*-
-
 import opml
-import feedparser
 
-from .models import FeedEntry
 from .extensions import db
+from feed import Feed
+from user import User
+
 
 def fetch_feeds():
+    for feed in Feed.query.all():
+        feed.update()
+
+def import_ompl():
     outline = opml.parse("rssreader/subscriptions.xml")
     for entry in outline:
         rss_url = entry.xmlUrl
         print rss_url
-        data = feedparser.parse(rss_url)
-        print data.version
-        for entry in data.entries:
-            title = entry.title
-            content = entry.get('summary', '')
-            for part in entry.get('content', []):
-                content += part.value
-            feed_entry = FeedEntry(title, content)
-            db.session.add(feed_entry)
+        user = User.query.filter_by(login='admin').first()
+        feed = Feed(rss_url, user.get_id())
+        db.session.add(feed)
         db.session.commit()

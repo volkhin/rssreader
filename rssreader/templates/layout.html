@@ -6,9 +6,29 @@
         <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" media="screen">
         <script src="http://code.jquery.com/jquery.js"></script>
         <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-        {% block css %}{% endblock %}
+        {% block css %}
+        <style>
+        </style>
+        {% endblock %}
     </head>
     <body>
+        {% block header %}
+        <div class="navbar navbar-inverse navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="brand" href="{{ url_for('main.index') }}">RSS Reader </a>
+                    <p class="navbar-text pull-right">
+                    {% if current_user.is_authenticated() %}
+                    user: {{ current_user.login }}
+                    <a href="{{ url_for('user.logout') }}">Log out</a>
+                    </p>
+                    {% else %}
+                    <a href="{{ url_for('user.login') }}">Log in</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endblock %}
         <div class="container">
             {% for message in get_flashed_messages() %}
             <div class="alert">

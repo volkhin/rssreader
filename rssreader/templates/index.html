@@ -9,9 +9,9 @@
 <ul>
 {% for entry in entries %}
 <li>{{ entry.id }} <a onclick="toggle('content{{ entry.id }}')">{{ entry.title }}</a></li>
-<p style="display:none" id="content{{ entry.id }}">
-{{ entry.content }}
-</p>
+<div style="display:none" id="content{{ entry.id }}">
+{{ entry.content|safe }}
+</div>
 {% endfor %}
 </ul>
 {% endblock %}
