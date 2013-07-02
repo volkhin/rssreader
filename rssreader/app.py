@@ -6,14 +6,16 @@ from .config import DefaultConfig
 from .extensions import db, login_manager
 from user import user_blueprint, User
 from feed import Feed, FeedEntry, feed_blueprint
+from api import api_blueprint
 
 
 ALL = ['create_app']
 main_blueprint = Blueprint('main', __name__)
-blueprints = (main_blueprint, user_blueprint, feed_blueprint)
+blueprints = (main_blueprint, user_blueprint, feed_blueprint, api_blueprint)
 
 @main_blueprint.route('/')
 def index():
+    print url_for('api.mark_read', entry_id=1)
     return redirect(url_for('feeds.index'))
 
 def create_app(app_name=None):

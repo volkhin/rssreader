@@ -1,4 +1,4 @@
-.nav {
+.sidebar {
     padding: 0;
     -webkit-border-radius: 6px;
        -moz-border-radius: 6px;
@@ -8,21 +8,25 @@
             box-shadow: 0 1px 4px rgba(0,0,0,.065);
 }
 
-.nav > li > a {
+.sidebar > li > a {
     display: block;
     padding: 7px 15px;
     border: 1px solid #e5e5e5;
     margin: 0 0 -1px;
 }
 
-.nav > li:last-child > a {
+.sidebar > li:last-child > a {
     -webkit-border-radius: 0 0 6px 6px;
        -moz-border-radius: 0 0 6px 6px;
             border-radius: 0 0 6px 6px;
 }
 
-.nav > li:first-child > a {
+.sidebar > li:first-child > a {
     -webkit-border-radius: 6px 6px 0 0;
        -moz-border-radius: 6px 6px 0 0;
             border-radius: 6px 6px 0 0;
+}
+
+.top-buffer {
+    margin-top: 20px;
 }

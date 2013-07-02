@@ -20,7 +20,7 @@
                     <a class="brand" href="{{ url_for('main.index') }}">RSS Reader </a>
                     <p class="navbar-text pull-right">
                     {% if current_user.is_authenticated() %}
-                    user: {{ current_user.login }}
+                    logged as {{ current_user.login }}
                     <a href="{{ url_for('user.logout') }}">Log out</a>
                     </p>
                     {% else %}

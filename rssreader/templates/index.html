@@ -1,27 +1,40 @@
 {% extends 'layout.html' %}
 {% block body %}
 <script>
-    function toggle(id) {
-        $('#' + id).slideToggle();
+    function expand(id) {
+        $('#content' + id).slideToggle();
+        $.post("{{ url_for('api.mark_read') }}", { entry_id: id });
     }
 </script>
-<h1>Newsfeed</h1>
-<div class="row">
+<div class="row top-buffer">
     <div class="span3">
-        <ul class="nav nav-list">
-            <li><a href="{{ url_for('feeds.index') }}">All items</a>
-            {% for feed in feeds %}
-            <li><a href="{{ url_for('feeds.single_feed', feed_id=feed.id) }}">{{ feed.url }}</a>
+        <ul class="nav nav-list sidebar">
+            <li>
+                <a href="{{ url_for('feeds.index') }}">All items</a>
+                {% for feed in feeds %}
+            </li>
+            <li>
+                <a href="{{ url_for('feeds.single_feed', feed_id=feed.id) }}">
+                {{ feed.get_title() }}
+                {{ feed.get_unread_entries_count() }}
+                </a>
+            </li>
             {% endfor %}
         </ul>
     </div>
     <div class="span9">
-        <ul>
+        <ul class="nav nav-list">
             {% for entry in entries %}
-            <li>{{ entry.id }} <a onclick="toggle('content{{ entry.id }}')">{{ entry.title }}</a></li>
-            <div style="display:none" id="content{{ entry.id }}">
+            <li>
+            <a onclick="expand('{{ entry.id }}');">
+                {{ entry.title }}
+                &ndash;
+                <span>{{ entry.created_at }}</span>
+            </a>
+            <div class="well" style="display:none" id="content{{ entry.id }}">
                 {{ entry.content|safe }}
             </div>
+            </li>
             {% endfor %}
         </ul>
     </div>

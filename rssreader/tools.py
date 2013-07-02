@@ -19,3 +19,4 @@ def import_ompl():
         feed = Feed(rss_url, user.get_id())
         db.session.add(feed)
         db.session.commit()
+        feed.update()

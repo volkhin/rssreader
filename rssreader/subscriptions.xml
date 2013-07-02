@@ -4,8 +4,6 @@
         <title>Artem: подписки в Google Reader</title>
     </head>
     <body>
-        <outline text="bash" title="bash" type="rss"
-            xmlUrl="http://bash.im/rss" htmlUrl="http://bash.im"/>
         <outline text="Every day matters" title="Every day matters"
             type="rss" xmlUrl="http://larrr.com/feed/rss/" htmlUrl="http://larrr.com"/>
         <outline text="mnmlist" title="mnmlist" type="rss"
