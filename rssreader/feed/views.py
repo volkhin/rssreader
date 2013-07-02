@@ -1,8 +1,9 @@
 #-*- coding: utf-8 -*-
-from flask import Blueprint, request, render_template, flash, redirect, url_for
-from flask.ext.login import login_user, logout_user, current_user
+from flask import Blueprint, render_template
+from flask.ext.login import current_user
 
 from .models import Feed, FeedEntry
+
 
 feed_blueprint = Blueprint('feeds', __name__)
 

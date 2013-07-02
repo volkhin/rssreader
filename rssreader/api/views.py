@@ -1,7 +1,8 @@
 #-*- coding: utf-8 -*-
 from flask import Blueprint, request
-from ..feed import FeedEntry
+
 from ..extensions import db
+from ..feed import FeedEntry
 
 
 api_blueprint = Blueprint('api', __name__, url_prefix='/api')

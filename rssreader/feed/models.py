@@ -61,8 +61,10 @@ class Feed(db.Model):
             title = entry.title
             created_at = datetime.datetime(*entry.published_parsed[0:6])
             content = entry.get('summary', '')
-            for part in entry.get('content', []):
-                content += part.value
+            if 'content' in entry.keys():
+                content = ''
+                for part in entry['content']:
+                    content += part.value
             content = clean_text(content)
             content = u'<div>{}</div>'.format(content)
             result = FeedEntry.query.filter_by(url=url).scalar()
