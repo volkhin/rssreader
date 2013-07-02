@@ -21,7 +21,6 @@ def initdb():
     db.session.add(user2)
     db.session.commit()
     rssreader.tools.import_ompl()
-    rssreader.tools.fetch_feeds()
 
 @manager.command
 def fetch_feeds():
