@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 project = "rssreader"
 
 with open('requirements.txt') as f:
-    install_requires = [x.strip() for x in f.readlines()]
-    install_requires = [x for x in install_requires if x]
+    install_requires = [x.strip() for x in f.readlines() if x.strip()]
 
 setup(
         name=project,
@@ -14,7 +13,7 @@ setup(
         description='rss reader',
         author='Artem Volkhin',
         author_email='artem@volkhin.com',
-        packages=["rssreader"],
+        packages=find_packages(),
         include_package_data=True,
         zip_safe=False,
         install_requires=install_requires,
