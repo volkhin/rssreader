@@ -1,20 +1,23 @@
 #-*- coding: utf-8 -*-
 import opml
+from redis import Redis
+from rq import Queue
 
-from .extensions import db
+from .config import config
+from .database import db
 from feed import Feed
 from user import User
-from rq import Queue
-from redis import Redis
 
 
 def fetch_feeds():
     for feed in Feed.query.all():
-        enqueue(feed.update)
+        enqueue(update_feed, feed.id)
 
 def update_feed(feed_id):
-    with open('temp.txt', 'a') as f:
-        print >>f, 'update feed {}'.format(feed_id)
+    from .database import db
+    db.init()
+    from .feed import Feed
+    Feed.query.get(feed_id).update()
 
 def import_ompl():
     outline = opml.parse("rssreader/subscriptions.xml")
@@ -25,10 +28,9 @@ def import_ompl():
         feed = Feed(rss_url, user.get_id())
         db.session.add(feed)
         db.session.commit()
-        feed.update()
+        # feed.update() # FIXME
 
 def enqueue(func, *args):
-    # TODO: add rq support
-    q = Queue(connection=Redis())
+    q = Queue(connection=Redis(**config.REDIS_CONNECTION_OPTIONS))
     j = q.enqueue(func, *args)
     print j

@@ -3,12 +3,12 @@
 import rssreader.tools
 from flask.ext.script import Manager
 from rssreader import create_app
-from rssreader.config import DevelopmentConfig
-from rssreader.extensions import db
+from rssreader.config import config
+from rssreader import db
 from rssreader.user.models import User
 
 
-app = create_app(DevelopmentConfig)
+app = create_app()
 manager = Manager(app)
 
 @manager.command

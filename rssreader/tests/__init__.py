@@ -3,14 +3,15 @@
 from flask.ext.testing import TestCase as Base
 
 from .. import create_app, db
-from ..config import TestingConfig
+from ..config import config
 from ..feed import FeedEntry, Feed
 from ..user import User
 
 
 class TestCase(Base):
     def create_app(self):
-        app = create_app(config=TestingConfig)
+        config.set('testing')
+        app = create_app()
         return app
 
     def _check_endpoint(self, endpoint):

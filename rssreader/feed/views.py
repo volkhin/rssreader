@@ -3,7 +3,6 @@ from flask import Blueprint, render_template, request
 from flask.ext.login import current_user, login_required
 from werkzeug.datastructures import CombinedMultiDict
 
-from ..extensions import db
 from .models import Feed, FeedEntry
 
 
@@ -42,8 +41,6 @@ def single_entry(**kws):
         action = data['action']
         if action == 'read':
             entry.mark_read()
-            db.session.commit()
         elif action == 'unread':
             entry.mark_unread()
-            db.session.commit()
     return render_template('index.html', entries=[entry], **get_global_data())

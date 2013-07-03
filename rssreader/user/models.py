@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 from flask.ext.login import UserMixin
 
-from ..extensions import db
+from ..database import db
 
 
 class User(db.Model, UserMixin):
