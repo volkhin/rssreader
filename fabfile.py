@@ -8,7 +8,6 @@ def reset():
     '''
     Reset local env.
     '''
-    local('rm -rf *.pyc')
     local('python manage.py initdb')
 
 def setup():
@@ -20,10 +19,3 @@ def setup():
     execfile(activate_this, dict(__file__=activate_this))
     local('python setup.py install')
     reset()
-
-def run():
-    '''
-    Run local debug server.
-    '''
-    reset()
-    local('python manage.py run')
