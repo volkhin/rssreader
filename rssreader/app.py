@@ -35,4 +35,7 @@ def create_app():
         return User.query.get(id)
     login_manager.init_app(app)
 
+    @app.teardown_appcontext
+    def teardown_db(exception=None):
+        db.teardown()
     return app

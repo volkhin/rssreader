@@ -33,5 +33,8 @@ class DatabaseAbstraction(object):
     def drop_all(self):
         self.metadata.drop_all(bind=self.engine)
 
+    def teardown(self):
+        self.session.remove()
+
 
 db = DatabaseAbstraction()

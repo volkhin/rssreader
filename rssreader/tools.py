@@ -18,6 +18,7 @@ def update_feed(feed_id):
     db.init()
     from .feed import Feed
     Feed.query.get(feed_id).update()
+    db.teardown()
 
 def import_ompl():
     outline = opml.parse("rssreader/subscriptions.xml")
