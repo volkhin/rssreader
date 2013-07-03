@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
-from flask.ext.script import Manager
-
 import rssreader.tools
-from rssreader.user.models import User
+from flask.ext.script import Manager
 from rssreader import create_app
+from rssreader.config import DevelopmentConfig
 from rssreader.extensions import db
+from rssreader.user.models import User
 
 
-app = create_app()
+app = create_app(DevelopmentConfig)
 manager = Manager(app)
 
 @manager.command

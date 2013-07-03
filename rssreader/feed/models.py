@@ -28,6 +28,11 @@ class FeedEntry(db.Model):
 
     def mark_read(self):
         self.read = True
+        db.session.commit()
+
+    def mark_unread(self):
+        self.read = False
+        db.session.commit()
 
 
 class Feed(db.Model):
@@ -78,3 +83,7 @@ class Feed(db.Model):
 
     def get_unread_entries_count(self):
         return self.entries.filter_by(read=False).count()
+
+    def test(self):
+        with open('temp.txt', 'a') as f:
+            print >>f, 'test update feed {}'.format(self.id)

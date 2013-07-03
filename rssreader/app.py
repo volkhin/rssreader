@@ -1,28 +1,28 @@
 #-*- coding: utf-8 -*-
-from flask import Flask, render_template, Blueprint, request, flash, redirect, url_for
-from flask.ext.login import login_required, current_user
+from flask import Flask, Blueprint, redirect, url_for
+from flask.ext.login import current_user
 
-from .config import DefaultConfig
+from .config import BaseConfig, DevelopmentConfig, ProductionConfig
 from .extensions import db, login_manager
+from feed import feed_blueprint
 from user import user_blueprint, User
-from feed import Feed, FeedEntry, feed_blueprint
-from api import api_blueprint
 
 
-ALL = ['create_app']
+# ALL = ['create_app']
 main_blueprint = Blueprint('main', __name__)
-blueprints = (main_blueprint, user_blueprint, feed_blueprint, api_blueprint)
+blueprints = (main_blueprint, user_blueprint, feed_blueprint,)
 
 @main_blueprint.route('/')
 def index():
-    print url_for('api.mark_read', entry_id=1)
-    return redirect(url_for('feeds.index'))
+    if current_user.is_authenticated():
+        return redirect(url_for('feeds.list_entries'))
+    return "Landing page"
 
-def create_app(app_name=None):
-    if app_name is None:
-        app_name = DefaultConfig.PROJECT
-    app = Flask(app_name)
-    app.config.from_object(DefaultConfig)
+def create_app(config):
+    # if app_name is None:
+        # app_name = config.PROJECT
+    app = Flask(__name__) # FIXME: is it correct name?
+    app.config.from_object(config)
     login_manager.login_view = 'user.login'
     for blueprint in blueprints:
         app.register_blueprint(blueprint)

@@ -3,7 +3,7 @@
 <script>
     function expand(id) {
         $('#content' + id).slideToggle();
-        $.post("{{ url_for('api.mark_read') }}", { entry_id: id });
+        $.post("{{ url_for('feeds.mark_entry_read') }}", { entry_id: id });
     }
 </script>
 
@@ -11,7 +11,7 @@
     <div class="span3">
         <ul class="nav nav-list sidebar">
             <li>
-                <a href="{{ url_for('feeds.index') }}">All items</a>
+                <a href="{{ url_for('feeds.list_entries') }}">All items</a>
                 {% for feed in feeds %}
             </li>
             <li>

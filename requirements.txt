@@ -3,6 +3,9 @@ Flask-SQLAlchemy
 Flask-Login
 Flask-WTF
 Flask-Script
+Flask-Testing
+rq
+redis
 nose
 opml
 feedparser
