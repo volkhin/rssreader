@@ -18,6 +18,7 @@ def get_global_data():
 @login_required
 def list_entries(**kws):
     if current_user.is_authenticated:
+        # TODO: query(Feed, FeedEntry).join('feed_id').filter_by(user_id) ?
         query = FeedEntry.query.join(Feed).filter(Feed.user_id==current_user.get_id())
         query = query.filter(FeedEntry.read==False)
         if 'feed_id' in kws:
