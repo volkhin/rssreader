@@ -13,7 +13,8 @@ class DatabaseAbstraction(object):
         self.Model = declarative_base() 
         for module in sqlalchemy, sqlalchemy.orm:
             for key in module.__all__:
-                setattr(self, key, getattr(module, key))
+                if not hasattr(self, key):
+                    setattr(self, key, getattr(module, key))
 
     @property
     def metadata(self):
