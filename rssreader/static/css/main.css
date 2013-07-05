@@ -20,3 +20,7 @@
 .top-buffer {
     margin-top: 20px;
 }
+
+.clickable {
+    cursor: pointer;
+}

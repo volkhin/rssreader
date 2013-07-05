@@ -4,6 +4,8 @@ from flask.ext.login import current_user, login_required
 from werkzeug.datastructures import CombinedMultiDict
 
 from .models import Feed, FeedEntry
+from .forms import SubscribeForm
+from ..database import db
 
 
 feed_blueprint = Blueprint('feeds', __name__)
@@ -11,6 +13,7 @@ feed_blueprint = Blueprint('feeds', __name__)
 def get_global_data():
     d = dict()
     d['feeds'] = Feed.query.filter_by(user_id=current_user.get_id()).all()
+    d['subscribe_form'] = SubscribeForm()
     return d
 
 @feed_blueprint.route('/feeds')
@@ -57,3 +60,13 @@ def single_entry(**kws):
         elif action == 'unstar':
             entry.mark_unstar()
     return render_template('index.html', entries=[entry], **get_global_data())
+
+@feed_blueprint.route('/subscribe', methods=['POST'])
+@login_required
+def subscribe():
+    rss_url = request.form['url']
+    feed = Feed(rss_url, current_user.id)
+    db.session.add(feed)
+    db.session.commit()
+    feed.update()
+    return "OK"

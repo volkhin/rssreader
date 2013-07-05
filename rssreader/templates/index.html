@@ -2,12 +2,20 @@
 {% block body %}
 <script>
     function expand(id) {
-        $('#content' + id).slideToggle('slow');
+        $('#content' + id).slideToggle(100);
         $.post("{{ url_for('feeds.mark_entry_read') }}", { entry_id: id });
     }
 </script>
 
-<div class="row top-buffer">
+<div class="top-buffer">
+    <form class="form-inline" method="post" action="{{ url_for('feeds.subscribe') }}">
+        <!-- {{ subscribe_form.csrf_token }} -->
+        {{ subscribe_form.url(class="input", placeholder=subscribe_form.url.label.text) }}
+        {{ subscribe_form.submit(class="btn") }}
+    </form>
+</div>
+
+<div class="row">
     <div class="span3">
         <ul class="sidebar">
             <li>
@@ -44,11 +52,9 @@
             </thead>
             <tbody>
                 {% for entry in entries %}
-                <tr>
+                <tr class="clickable" onclick="expand('{{ entry.id }}');">
                     <td>
-                        <a onclick="expand('{{ entry.id }}');">
-                            {{ entry.title }}
-                        </a>
+                        {{ entry.title }}
                     </td>
                     <td>
                         {{ entry.created_at }}
@@ -57,13 +63,19 @@
                         {% if entry.starred %}+{% endif %}
                     </td>
                     <td>
-                        {{ entry.read }}
+                        {% if not entry.read %}New!{% endif %}
                     </td>
                 </tr>
                 <tr>
                     <td colspan="4" style="display:none" id="content{{ entry.id }}">
                         <a onclick="$.post('{{ url_for('feeds.mark_entry_starred')
                             }}', { entry_id: {{ entry.id }} })">star</a>
+                        <a onclick="$.post('{{ url_for('feeds.mark_entry_unstarred')
+                            }}', { entry_id: {{ entry.id }} })">unstar</a>
+                        <a onclick="$.post('{{ url_for('feeds.mark_entry_read')
+                            }}', { entry_id: {{ entry.id }} })">read</a>
+                        <a onclick="$.post('{{ url_for('feeds.mark_entry_unread')
+                            }}', { entry_id: {{ entry.id }} })">unread</a>
                         {{ entry.content|safe }}
                     </td>
                 </tr>
