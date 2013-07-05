@@ -30,10 +30,12 @@
             <li>
             <a href="{{ url_for('feeds.list_entries', starred=1) }}">Starred</a>
             </li>
+        </ul>
+        <ul class="sidebar">
             {% for feed in feeds %}
             <li>
                 <a href="{{ url_for('feeds.single_feed', feed_id=feed.id) }}">
-                {{ feed.get_title() }}
+                {{ feed.get_title()|truncate(20,True) }}
                 {{ feed.get_unread_entries_count() }}
                 </a>
             </li>
