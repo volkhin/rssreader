@@ -1,9 +1,10 @@
 #-*- coding: utf-8 -*-
 from flask import Blueprint, request, render_template, flash, redirect, url_for
-from flask.ext.login import login_user, logout_user, current_user
+from flask.ext.login import login_user, logout_user, current_user, login_required
 
 from .forms import LoginForm
 from .models import User
+from ..database import db
 
 
 user_blueprint = Blueprint('user', __name__)
@@ -26,3 +27,19 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('main.index'))
+
+@user_blueprint.route('/settings/show_read', endpoint='settings_show_read',
+        methods=['POST'], defaults={'action': 'show_read'})
+@user_blueprint.route('/settings/hide_read', endpoint='settings_hide_read',
+        methods=['POST'], defaults={'action': 'hide_read'})
+@login_required
+def change_settings(**kws):
+    if 'action' in kws:
+        action = kws['action']
+        if action == 'show_read':
+            current_user.show_read = True
+            db.session.commit()
+        elif action == 'hide_read':
+            current_user.show_read = False
+            db.session.commit()
+    return "OK"

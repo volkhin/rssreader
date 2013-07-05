@@ -16,6 +16,7 @@ class FeedEntry(db.Model):
     feed_id = db.Column(db.Integer, db.ForeignKey('feeds.id'))
     created_at = db.Column(db.DateTime)
     read = db.Column(db.Boolean, default=False)
+    starred = db.Column(db.Boolean, default=False)
 
     def __init__(self, url, title, content, feed, created_at):
         self.url = url
@@ -33,6 +34,14 @@ class FeedEntry(db.Model):
 
     def mark_unread(self):
         self.read = False
+        db.session.commit()
+
+    def mark_star(self):
+        self.starred = True
+        db.session.commit()
+
+    def mark_unstar(self):
+        self.starred = False
         db.session.commit()
 
 

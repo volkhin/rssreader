@@ -10,6 +10,7 @@ class User(db.Model, UserMixin):
     login = db.Column(db.String(256))
     password = db.Column(db.String(256))
     feeds = db.relationship('Feed', backref='user', lazy='dynamic')
+    show_read = db.Column(db.Boolean, default=False)
 
     def __init__(self, login, password):
         self.login = login

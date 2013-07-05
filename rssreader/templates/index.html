@@ -2,18 +2,27 @@
 {% block body %}
 <script>
     function expand(id) {
-        $('#content' + id).slideToggle();
+        $('#content' + id).slideToggle('slow');
         $.post("{{ url_for('feeds.mark_entry_read') }}", { entry_id: id });
     }
 </script>
 
 <div class="row top-buffer">
     <div class="span3">
-        <ul class="nav nav-list sidebar">
+        <ul class="sidebar">
+            <li>
+                <a onclick="$.post('{{ url_for('user.settings_show_read') }}')">show</a>/
+                <a onclick="$.post('{{ url_for('user.settings_hide_read') }}')">hide</a> read items
+            </li>
+        </ul>
+        <ul class="sidebar">
             <li>
                 <a href="{{ url_for('feeds.list_entries') }}">All items</a>
-                {% for feed in feeds %}
             </li>
+            <li>
+            <a href="{{ url_for('feeds.list_entries', starred=1) }}">Starred</a>
+            </li>
+            {% for feed in feeds %}
             <li>
                 <a href="{{ url_for('feeds.single_feed', feed_id=feed.id) }}">
                 {{ feed.get_title() }}
@@ -24,20 +33,43 @@
         </ul>
     </div>
     <div class="span9">
-        <ul class="nav nav-list">
-            {% for entry in entries %}
-            <li>
-            <a onclick="expand('{{ entry.id }}');">
-                {{ entry.title }}
-                &ndash;
-                <span>{{ entry.created_at }}</span>
-            </a>
-            <div class="well" style="display:none" id="content{{ entry.id }}">
-                {{ entry.content|safe }}
-            </div>
-            </li>
-            {% endfor %}
-        </ul>
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Published at</th>
+                    <th>Starred</th>
+                    <th>Read</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                <tr>
+                    <td>
+                        <a onclick="expand('{{ entry.id }}');">
+                            {{ entry.title }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ entry.created_at }}
+                    </td>
+                    <td>
+                        {% if entry.starred %}+{% endif %}
+                    </td>
+                    <td>
+                        {{ entry.read }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="display:none" id="content{{ entry.id }}">
+                        <a onclick="$.post('{{ url_for('feeds.mark_entry_starred')
+                            }}', { entry_id: {{ entry.id }} })">star</a>
+                        {{ entry.content|safe }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

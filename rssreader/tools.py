@@ -29,7 +29,7 @@ def import_ompl():
         feed = Feed(rss_url, user.get_id())
         db.session.add(feed)
         db.session.commit()
-        # feed.update() # FIXME
+        feed.update()
 
 def enqueue(func, *args):
     q = Queue(connection=Redis(**config.REDIS_CONNECTION_OPTIONS))

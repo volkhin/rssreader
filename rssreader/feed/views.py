@@ -17,12 +17,16 @@ def get_global_data():
 @feed_blueprint.route('/feeds/<int:feed_id>', endpoint='single_feed')
 @login_required
 def list_entries(**kws):
+    data = CombinedMultiDict((request.values, kws))
     if current_user.is_authenticated:
         # TODO: query(Feed, FeedEntry).join('feed_id').filter_by(user_id) ?
         query = FeedEntry.query.join(Feed).filter(Feed.user_id==current_user.get_id())
-        query = query.filter(FeedEntry.read==False)
-        if 'feed_id' in kws:
-            query = query.filter(Feed.id==kws['feed_id'])
+        if 'feed_id' in data:
+            query = query.filter(Feed.id==data['feed_id'])
+        if not current_user.show_read:
+            query = query.filter(FeedEntry.read==False)
+        if data.get('starred', False):
+            query = query.filter(FeedEntry.starred==True)
         query = query.order_by(FeedEntry.created_at.desc())
         entries = query.all()
     else:
@@ -34,6 +38,10 @@ def list_entries(**kws):
         methods=['POST'], defaults={'action': 'read'})
 @feed_blueprint.route('/mark_entry_unread', endpoint='mark_entry_unread',
         methods=['POST'], defaults={'action': 'unread'})
+@feed_blueprint.route('/mark_entry_starred', endpoint='mark_entry_starred',
+        methods=['POST'], defaults={'action': 'star'})
+@feed_blueprint.route('/mark_entry_unstarred', endpoint='mark_entry_unstarred',
+        methods=['POST'], defaults={'action': 'unstar'})
 @login_required
 def single_entry(**kws):
     data = CombinedMultiDict((request.values, kws))
@@ -44,4 +52,8 @@ def single_entry(**kws):
             entry.mark_read()
         elif action == 'unread':
             entry.mark_unread()
+        elif action == 'star':
+            entry.mark_star()
+        elif action == 'unstar':
+            entry.mark_unstar()
     return render_template('index.html', entries=[entry], **get_global_data())
