@@ -9,7 +9,6 @@ from feed import feed_blueprint
 from user import user_blueprint, User
 
 
-__all__ = ['create_app']
 main_blueprint = Blueprint('main', __name__)
 blueprints = (main_blueprint, user_blueprint, feed_blueprint,)
 

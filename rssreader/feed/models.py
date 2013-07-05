@@ -65,9 +65,10 @@ class Feed(db.Model):
 
     def update(self):
         def clean_text(text):
-            tags = ['img', 'br', 'p', 'em', 'h1', 'h2']
+            tags = ['a', 'img', 'br', 'p', 'em', 'h1', 'h2']
             attrs = {
                     'img': ['src', 'alt'],
+                    'a': ['href'],
                     }
             return clean(text, tags, attrs, strip=True)
 
