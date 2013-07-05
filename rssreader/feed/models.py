@@ -10,13 +10,14 @@ from ..database import db
 class FeedEntry(db.Model):
     __tablename__ = 'feed_entries'
     id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(256), index=True, unique=True)
+    url = db.Column(db.String(256), index=True)
     title = db.Column(db.String(256))
     content = db.Column(db.Text)
     feed_id = db.Column(db.Integer, db.ForeignKey('feeds.id'))
     created_at = db.Column(db.DateTime)
     read = db.Column(db.Boolean, default=False)
     starred = db.Column(db.Boolean, default=False)
+    db.UniqueConstraint('url', 'user_id')
 
     def __init__(self, url, title, content, feed, created_at):
         self.url = url
@@ -53,6 +54,7 @@ class Feed(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     entries = db.relationship('FeedEntry', backref=db.backref('feed'), lazy='dynamic')
     unread_count = db.Column(db.Integer, default=0)
+    db.UniqueConstraint('url', 'user_id')
 
     def __init__(self, url, user_id):
         self.url = url

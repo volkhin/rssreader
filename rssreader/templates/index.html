@@ -9,9 +9,9 @@
 
 <div class="top-buffer">
     <form class="form-inline" method="post" action="{{ url_for('feeds.subscribe') }}">
-        <!-- {{ subscribe_form.csrf_token }} -->
+        {{ subscribe_form.csrf_token }}
         {{ subscribe_form.url(class="input", placeholder=subscribe_form.url.label.text) }}
-        {{ subscribe_form.submit(class="btn") }}
+        {{ subscribe_form.submit(class="btn btn-medium") }}
     </form>
 </div>
 

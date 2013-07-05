@@ -12,7 +12,7 @@ user_blueprint = Blueprint('user', __name__)
 @user_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm(current_user=current_user)
-    if request.method == 'POST' and form.validate_on_submit():
+    if form.validate_on_submit():
         user, authenticated = User.authenticate(form.login.data,
                 form.password.data)
         if user and authenticated:

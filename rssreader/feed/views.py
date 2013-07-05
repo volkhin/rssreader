@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, abort
 from flask.ext.login import current_user, login_required
 from werkzeug.datastructures import CombinedMultiDict
 
@@ -64,9 +64,16 @@ def single_entry(**kws):
 @feed_blueprint.route('/subscribe', methods=['POST'])
 @login_required
 def subscribe():
-    rss_url = request.form['url']
-    feed = Feed(rss_url, current_user.id)
-    db.session.add(feed)
-    db.session.commit()
-    feed.update()
-    return "OK"
+    form = SubscribeForm()
+    if form.validate_on_submit():
+        rss_url = request.form['url']
+        feed = Feed.query.filter_by(url=rss_url, user_id=current_user.id).first()
+        if feed is None:
+            feed = Feed(rss_url, current_user.id)
+            db.session.add(feed)
+            db.session.commit()
+            feed.update()
+            return "OK"
+        else:
+            return "Feed already exists"
+    abort(400)
