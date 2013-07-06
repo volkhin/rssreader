@@ -6,3 +6,4 @@ venv
 .ropeproject
 *.db
 *.sqlite
+*rdb
