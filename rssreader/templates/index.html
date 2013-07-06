@@ -8,9 +8,12 @@
                 $.post("{{ url_for('feeds.mark_entry_read') }}", {
                     entry_id: id
                 }, function(data, textStatus) {
-                    message = $("<div class='alert'>" + data + "</div>");
+                    message = $("<div class='alert fade in'>" + data + "</div>");
                     message.append("<a class='close' data-dismiss='alert' href='#'>&times;</a>");
-                    $('#page').prepend(message);
+                    message.delay(2000).fadeOut("slow", function() {
+                        $(this).remove();
+                    });
+                    $('#alerts').append(message);
                 });
             }
         });
