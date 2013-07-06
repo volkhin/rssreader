@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-from flask import Blueprint, render_template, request, abort
+from flask import Blueprint, render_template, request, abort, jsonify
 from flask.ext.login import current_user, login_required
 from werkzeug.datastructures import CombinedMultiDict
 
@@ -34,16 +34,20 @@ def list_entries(**kws):
         entries = query.all()
     else:
         entries = []
-    return render_template('index.html', entries=entries, **get_global_data())
+    context = get_global_data()
+    context['entries'] = entries
+    if 'api' in request.values:
+        return jsonify(context)
+    return render_template('index.html', **context)
 
 @feed_blueprint.route('/entry/<int:entry_id>', endpoint='entry')
-@feed_blueprint.route('/mark_entry_read', endpoint='mark_entry_read',
+@feed_blueprint.route('/api/1/mark_entry_read', endpoint='mark_entry_read',
         methods=['POST'], defaults={'action': 'read'})
-@feed_blueprint.route('/mark_entry_unread', endpoint='mark_entry_unread',
+@feed_blueprint.route('/api/1/mark_entry_unread', endpoint='mark_entry_unread',
         methods=['POST'], defaults={'action': 'unread'})
-@feed_blueprint.route('/mark_entry_starred', endpoint='mark_entry_starred',
+@feed_blueprint.route('/api/1/mark_entry_starred', endpoint='mark_entry_starred',
         methods=['POST'], defaults={'action': 'star'})
-@feed_blueprint.route('/mark_entry_unstarred', endpoint='mark_entry_unstarred',
+@feed_blueprint.route('/api/1/mark_entry_unstarred', endpoint='mark_entry_unstarred',
         methods=['POST'], defaults={'action': 'unstar'})
 @login_required
 def single_entry(**kws):
@@ -59,6 +63,7 @@ def single_entry(**kws):
             entry.mark_star()
         elif action == 'unstar':
             entry.mark_unstar()
+        return 'OK'
     return render_template('index.html', entries=[entry], **get_global_data())
 
 @feed_blueprint.route('/subscribe', methods=['POST'])

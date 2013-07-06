@@ -64,10 +64,10 @@ class TestFeeds(TestCase):
         entry.mark_read()
         self.assertEqual(FeedEntry.query.filter_by(read=False).count(),
                 unread_entries_number - 1)
-        self.client.post('/mark_entry_unread', data={'entry_id': entry.id})
+        self.client.post('/api/1/mark_entry_unread', data={'entry_id': entry.id})
         self.assertEqual(FeedEntry.query.filter_by(read=False).count(),
                 unread_entries_number - 1)
         self._login()
-        self.client.post('/mark_entry_unread', data={'entry_id': entry.id})
+        self.client.post('/api/1/mark_entry_unread', data={'entry_id': entry.id})
         self.assertEqual(FeedEntry.query.filter_by(read=False).count(),
                 unread_entries_number)
