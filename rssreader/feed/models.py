@@ -14,17 +14,17 @@ class FeedEntry(db.Model):
     title = db.Column(db.String(256))
     content = db.Column(db.Text)
     feed_id = db.Column(db.Integer, db.ForeignKey('feeds.id'))
-    created_at = db.Column(db.DateTime)
+    # created_at = db.Column(db.DateTime)
     read = db.Column(db.Boolean, default=False)
     starred = db.Column(db.Boolean, default=False)
     db.UniqueConstraint('url', 'user_id')
 
-    def __init__(self, url, title, content, feed, created_at):
-        self.url = url
-        self.title = title
-        self.content = content
-        self.feed = feed
-        self.created_at = created_at
+    # def __init__(self, url, title, content, feed, created_at):
+        # self.url = url
+        # self.title = title
+        # self.content = content
+        # self.feed = feed
+        # self.created_at = created_at
 
     def __repr__(self):
         return '<FeedEntry {}>'.format(self.id)
@@ -87,7 +87,11 @@ class Feed(db.Model):
             content = u'<div>{}</div>'.format(content)
             result = FeedEntry.query.filter_by(url=url).scalar()
             if not result:
-                feed_entry = FeedEntry(url, title, content, self, created_at)
+                feed_entry = FeedEntry(
+                        url=url,
+                        title=title,
+                        content=content,
+                        feed=self)
                 db.session.add(feed_entry)
         db.session.commit()
 
