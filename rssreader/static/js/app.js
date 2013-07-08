@@ -49,6 +49,7 @@ $(function() {
         onTitleClick: function() {
             this.visible = !this.visible;
             this.model.save({ read: true });
+            this.render();
         },
     });
 

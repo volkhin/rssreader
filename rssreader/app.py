@@ -30,13 +30,11 @@ class AdvancedJSONEncoder(json.JSONEncoder):
             for field in o.__table__.columns:
                 name = field.name
                 obj = getattr(o, name)
-                # data = json.dumps(obj)
-                if isinstance(obj, bool):
-                    obj = int(obj)
-                data = unicode(obj)
-                fields[name] = data
-                # print u'{} {} - {} - {}'.format(
-                        # name, type(obj), u'{}'.format(obj)[:20], data[:20])
+                if isinstance(obj, unicode):
+                    data = obj
+                else:
+                    data = json.dumps(obj)
+                fields[name] = obj
             return fields
         return super(json.JSONEncoder, self).default(o)
 
