@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-from flask import Flask, Blueprint, redirect, url_for
+from flask import Flask, Blueprint, redirect, url_for, json
 from flask.ext.login import current_user
 
 from .config import config
@@ -18,6 +18,29 @@ def index():
         return redirect(url_for('feeds.list_entries'))
     return "Landing page"
 
+
+class AdvancedJSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, unicode):
+            return o
+        if hasattr(o, 'isoformat'):
+            return o.isoformat()
+        if isinstance(o, db.Model):
+            fields = {}
+            for field in o.__table__.columns:
+                name = field.name
+                obj = getattr(o, name)
+                # data = json.dumps(obj)
+                if isinstance(obj, bool):
+                    obj = int(obj)
+                data = unicode(obj)
+                fields[name] = data
+                # print u'{} {} - {} - {}'.format(
+                        # name, type(obj), u'{}'.format(obj)[:20], data[:20])
+            return fields
+        return super(json.JSONEncoder, self).default(o)
+
+
 def create_app():
     app = Flask(__name__) # FIXME: is it correct name?
 
@@ -27,6 +50,8 @@ def create_app():
         app.register_blueprint(blueprint)
 
     db.init()
+
+    app.json_encoder = AdvancedJSONEncoder
 
     login_manager.login_view = 'user.login'
     @login_manager.user_loader
