@@ -2,11 +2,9 @@
 {% block body %}
 <script type="text/tempalte" id="entry-view-template">
     <div class="entry">
-        <span class="clickable entry-title">
-        <%= title %>
-        </span>
-        <%= starred %>
-        <%= read %>
+        <span class="clickable entry-title"><%= title %></span>
+        <span class="entry-starred"><%= starred ? '[starred]' : '[not starred]' %></span>
+        <span class="entry-read"><%= read ? '[read]' : '[not read]' %></span>
         <div class="well entry-content hidden">
             <%= content %>
         </div>

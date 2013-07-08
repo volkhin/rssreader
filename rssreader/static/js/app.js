@@ -28,6 +28,8 @@ $(function() {
         template: _.template($('#entry-view-template').html()),
         events: {
             "click .entry-title": "onTitleClick",
+            "click .entry-starred": "onStarClick",
+            "click .entry-read": "onReadClick",
         },
         initialize: function() {
             _.bindAll(this, "render");
@@ -48,8 +50,18 @@ $(function() {
         },
         onTitleClick: function() {
             this.visible = !this.visible;
-            this.model.save({ read: true });
+            if (this.visible) {
+                this.model.save({ read: true });
+            }
             this.render();
+        },
+        onStarClick: function() {
+            starred = this.model.get('starred');
+            this.model.save({ starred: !starred });
+        },
+        onReadClick: function() {
+            read = this.model.get('read');
+            this.model.save({ read: !read });
         },
     });
 
