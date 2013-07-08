@@ -19,13 +19,6 @@ class FeedEntry(db.Model):
     starred = db.Column(db.Boolean, default=False)
     db.UniqueConstraint('url', 'user_id')
 
-    # def __init__(self, url, title, content, feed, created_at):
-        # self.url = url
-        # self.title = title
-        # self.content = content
-        # self.feed = feed
-        # self.created_at = created_at
-
     def __repr__(self):
         return '<FeedEntry {}>'.format(self.id)
 

@@ -1,30 +1,16 @@
 $(function() {
     var Entry = Backbone.Model.extend({
-        defaults: {
-            title: "[no title]",
-            content: "[no content]",
-            // read: false,
-            // starred: false
-        }, 
-        initialize: function() {
-        },
     });
 
 
     var EntriesList = Backbone.Collection.extend({
         model: Entry,
         url: '/api/feeds',
-        initialize: function() {
-        },
-        parse: function(response, options) {
-            return response.entries;
-        },
     });
 
 
     var EntryView = Backbone.View.extend({
         tagName: "div",
-        // className: "clickable",
         template: _.template($('#entry-view-template').html()),
         events: {
             "click .entry-title": "onTitleClick",

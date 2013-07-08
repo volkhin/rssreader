@@ -36,28 +36,21 @@ def list_entries(**kws):
     else:
         entries = []
     if 'api' in data:
-        return jsonify({'entries': entries})
+        return json.dumps(entries)
     context = get_global_data()
     context['entries'] = entries
     return render_template('index.html', **context)
 
 @feed_blueprint.route('/api/feeds/<int:entry_id>', methods=['GET', 'POST', 'PUT'])
-# @feed_blueprint.route('/api/feeds/<int:feed_id>', endpoint='single_feed', defaults={'api': True})
 @login_required
 def single_entry(**kws):
     data = CombinedMultiDict((request.values, kws))
     entry = FeedEntry.query.get(data['entry_id'])
     if request.method == 'PUT':
         received_obj = json.loads(request.data)
-        # print received_obj
         FeedEntry.query.filter_by(id=received_obj['id']).update(received_obj)
-        # entry.update(**received_obj)
-        # entry = FeedEntry(**received_obj)
-        # db.session.add(entry)
         db.session.commit()
-        # print entry
         return json.dumps(entry)
-        # return jsonify(entry)
     return render_template('index.html', entries=[entry], **get_global_data())
 
 @feed_blueprint.route('/subscribe', methods=['POST'])
