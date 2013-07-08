@@ -5,8 +5,8 @@ from rq import Queue
 
 from .config import config
 from .database import db
-from feed import Feed
-from user import User
+from .feed import Feed
+from .user import User
 
 
 def fetch_feeds():
@@ -14,9 +14,9 @@ def fetch_feeds():
         enqueue(update_feed, feed.id)
 
 def update_feed(feed_id):
-    from .database import db
+    # from .database import db
     db.init()
-    from .feed import Feed
+    # from .feed import Feed
     Feed.query.get(feed_id).update()
     db.teardown()
 
