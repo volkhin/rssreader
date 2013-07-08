@@ -21,11 +21,14 @@ class DatabaseAbstraction(object):
         return self.Model.metadata
 
     def init(self):
-        options = {}
-        options['convert_unicode'] = True
-        self.engine = create_engine(config.SQLALCHEMY_DATABASE_URI, **options)
-        self.session = scoped_session(sessionmaker(autocommit=False,
-            autoflush=True, bind=self.engine))
+        engine_options = {'convert_unicode': True, 'echo': False}
+        self.engine = create_engine(config.SQLALCHEMY_DATABASE_URI, **engine_options)
+        session_options = {
+                'autocommit': False,
+                'autoflush': True,
+                'bind': self.engine
+                }
+        self.session = scoped_session(sessionmaker(**session_options))
         self.Model.query = self.session.query_property()
 
     def create_all(self):
