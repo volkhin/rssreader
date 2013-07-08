@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-from flask import Blueprint, render_template, request, abort, jsonify
+from flask import Blueprint, render_template, request, abort, jsonify, json
 from flask.ext.login import current_user, login_required
 from werkzeug.datastructures import CombinedMultiDict
 
@@ -18,6 +18,7 @@ def get_global_data():
 
 @feed_blueprint.route('/feeds')
 @feed_blueprint.route('/feeds/<int:feed_id>', endpoint='single_feed')
+@feed_blueprint.route('/api/feeds', defaults={'api': True})
 @login_required
 def list_entries(**kws):
     data = CombinedMultiDict((request.values, kws))
@@ -30,40 +31,33 @@ def list_entries(**kws):
             query = query.filter(FeedEntry.read==False)
         if data.get('starred', False):
             query = query.filter(FeedEntry.starred==True)
-        query = query.order_by(FeedEntry.created_at.desc())
+        # query = query.order_by(FeedEntry.created_at.desc())
         entries = query.all()
     else:
         entries = []
+    if 'api' in data:
+        return jsonify({'entries': entries})
     context = get_global_data()
     context['entries'] = entries
-    if 'api' in request.values:
-        return jsonify(context)
     return render_template('index.html', **context)
 
-@feed_blueprint.route('/entry/<int:entry_id>', endpoint='entry')
-@feed_blueprint.route('/api/1/mark_entry_read', endpoint='mark_entry_read',
-        methods=['POST'], defaults={'action': 'read'})
-@feed_blueprint.route('/api/1/mark_entry_unread', endpoint='mark_entry_unread',
-        methods=['POST'], defaults={'action': 'unread'})
-@feed_blueprint.route('/api/1/mark_entry_starred', endpoint='mark_entry_starred',
-        methods=['POST'], defaults={'action': 'star'})
-@feed_blueprint.route('/api/1/mark_entry_unstarred', endpoint='mark_entry_unstarred',
-        methods=['POST'], defaults={'action': 'unstar'})
+@feed_blueprint.route('/api/feeds/<int:entry_id>', methods=['GET', 'POST', 'PUT'])
+# @feed_blueprint.route('/api/feeds/<int:feed_id>', endpoint='single_feed', defaults={'api': True})
 @login_required
 def single_entry(**kws):
     data = CombinedMultiDict((request.values, kws))
     entry = FeedEntry.query.get(data['entry_id'])
-    if 'action' in data:
-        action = data['action']
-        if action == 'read':
-            entry.mark_read()
-        elif action == 'unread':
-            entry.mark_unread()
-        elif action == 'star':
-            entry.mark_star()
-        elif action == 'unstar':
-            entry.mark_unstar()
-        return 'OK'
+    if request.method == 'PUT':
+        received_obj = json.loads(request.data)
+        # print received_obj
+        FeedEntry.query.filter_by(id=received_obj['id']).update(received_obj)
+        # entry.update(**received_obj)
+        # entry = FeedEntry(**received_obj)
+        # db.session.add(entry)
+        db.session.commit()
+        # print entry
+        return json.dumps(entry)
+        # return jsonify(entry)
     return render_template('index.html', entries=[entry], **get_global_data())
 
 @feed_blueprint.route('/subscribe', methods=['POST'])

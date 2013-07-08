@@ -6,12 +6,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" media="screen">
         <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" media="screen">
+
         <script src="http://code.jquery.com/jquery.js"></script>
-        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-        {% block css %}
-        <style>
-        </style>
-        {% endblock %}
+        <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/underscore.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/backbone.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+        <script>
+            showNotification = function(text) {
+                message = $("<div class='alert fade in'>" + text + "</div>");
+                message.append("<a class='close' data-dismiss='alert' href='#'>&times;</a>");
+                message.delay(2000).fadeOut("slow", function() {
+                    $(this).remove();
+                });
+                $('#alerts').append(message);
+            };
+        </script>
     </head>
     <body>
         {% block header %}
