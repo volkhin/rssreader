@@ -29,7 +29,7 @@
         <div class="navbar navbar-inverse navbar-static-top">
             <div class="navbar-inner">
                 <div class="container">
-                    <a class="brand" href="{{ url_for('main.index') }}">RSS Reader </a>
+                    <a class="brand" href="{{ url_for('frontend.index') }}">RSS Reader </a>
                     <p class="navbar-text pull-right">
                     {% if current_user.is_authenticated() %}
                     logged as {{ current_user.login }}
@@ -42,6 +42,7 @@
             </div>
         </div>
         {% endblock %}
+
         <div class="container">
             {% for message in get_flashed_messages() %}
             <div class="alert">
@@ -49,7 +50,9 @@
                 {{ message }}
             </div>
             {% endfor %}
-            {% block body %}{% endblock %}
+
+            {% block body %}
+            {% endblock %}
         </div>
     </body>
 </html>

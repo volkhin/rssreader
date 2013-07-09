@@ -18,7 +18,7 @@ def login():
         if user and authenticated:
             flash('Authenticated as {}'.format(user.login))
             login_user(user)
-            return redirect(request.args.get('next') or url_for('main.index'))
+            return redirect(request.args.get('next') or url_for('frontend.index'))
         else:
             flash('Invalid login', 'error')
     return render_template('login.html', form=form)
@@ -26,7 +26,7 @@ def login():
 @user_blueprint.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('main.index'))
+    return redirect(url_for('frontend.index'))
 
 @user_blueprint.route('/settings/show_read', endpoint='settings_show_read',
         methods=['POST'], defaults={'action': 'show_read'})

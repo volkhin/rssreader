@@ -1,59 +1,54 @@
 #-*- coding: utf-8 -*-
-from flask import Blueprint, render_template, request, abort, jsonify, json
-from flask.ext.login import current_user, login_required
-from werkzeug.datastructures import CombinedMultiDict
-
-from .models import Feed, FeedEntry
 from .forms import SubscribeForm
+from flask import Blueprint, request, abort, json
+from flask.ext.login import current_user, login_required
+from flask.views import MethodView
+
 from ..database import db
+from .models import Feed, FeedEntry
 
 
 feed_blueprint = Blueprint('feeds', __name__)
 
-def get_global_data():
-    d = dict()
-    d['feeds'] = Feed.query.filter_by(user_id=current_user.get_id()).all()
-    d['subscribe_form'] = SubscribeForm()
-    return d
-
-@feed_blueprint.route('/feeds')
-@feed_blueprint.route('/feeds/<int:feed_id>', endpoint='single_feed')
-@feed_blueprint.route('/api/feeds', defaults={'api': True})
-@login_required
-def list_entries(**kws):
-    data = CombinedMultiDict((request.values, kws))
-    if current_user.is_authenticated:
-        # TODO: query(Feed, FeedEntry).join('feed_id').filter_by(user_id) ?
+class EntriesView(MethodView):
+    def get(self, entry_id):
         query = FeedEntry.query.join(Feed).filter(Feed.user_id==current_user.get_id())
-        if 'feed_id' in data:
-            query = query.filter(Feed.id==data['feed_id'])
+        # if 'feed_id' in data:
+            # query = query.filter(Feed.id==data['feed_id'])
+        if entry_id is not None:
+            query.filter(FeedEntry.id==entry_id)
         # if not current_user.show_read:
-        show_read = json.loads(data.get('show_read', 'false'))
+        show_read = json.loads(request.args.get('show_read', 'false'))
         if not show_read:
             query = query.filter(FeedEntry.read==False)
-        if data.get('starred', False):
+        starred_only = json.loads(request.args.get('starred_only', 'false'))
+        if starred_only:
             query = query.filter(FeedEntry.starred==True)
         # query = query.order_by(FeedEntry.created_at.desc())
         entries = query.all()
-    else:
-        entries = []
-    if 'api' in data:
         return json.dumps(entries)
-    context = get_global_data()
-    context['entries'] = entries
-    return render_template('index.html', **context)
 
-@feed_blueprint.route('/api/feeds/<int:entry_id>', methods=['GET', 'POST', 'PUT'])
-@login_required
-def single_entry(**kws):
-    data = CombinedMultiDict((request.values, kws))
-    entry = FeedEntry.query.get(data['entry_id'])
-    if request.method == 'PUT':
+    def post(self):
+        pass
+
+    def put(self, entry_id):
+        # entry = FeedEntry.query.get(request.values['entry_id'])
         received_obj = json.loads(request.data)
-        FeedEntry.query.filter_by(id=received_obj['id']).update(received_obj)
+        FeedEntry.query.filter_by(id=entry_id).update(received_obj)
         db.session.commit()
-        return json.dumps(entry)
-    return render_template('index.html', entries=[entry], **get_global_data())
+        return json.dumps(received_obj)
+
+    def delete(self, entry_id):
+        pass
+
+view = login_required(EntriesView.as_view('entries_api1'))
+feed_blueprint.add_url_rule('/api/1/entries', view_func=view,
+        defaults={'entry_id': None}, methods=['GET',])
+feed_blueprint.add_url_rule('/api/1/entries', view_func=view,
+        methods=['POST',])
+feed_blueprint.add_url_rule('/api/1/entries/<int:entry_id>', view_func=view,
+        methods=['GET', 'PUT', 'DELETE',])
+
 
 @feed_blueprint.route('/subscribe', methods=['POST'])
 @login_required

@@ -8,7 +8,7 @@ $(function() {
 
         model: Entry,
 
-        url: '/api/feeds'
+        url: '/api/1/entries'
 
     });
 
@@ -106,8 +106,9 @@ $(function() {
 
         events: {
             'click .refresh': 'refresh',
-            'click .show_read': 'show_read',
-            'click .hide_read': 'hide_read'
+            'click .show_unread': 'show_unread',
+            'click .show_most_recent': 'show_most_recent',
+            'click .show_starred': 'show_starred',
         },
 
         initialize: function() {
@@ -118,9 +119,9 @@ $(function() {
         render: function() {
             var obj = $('<ul></ul>');
             obj.append('<li><a class="refresh" href="#">Refresh</a></li>');
-            obj.append('<li><a class="all" href="#">All entries</a></li>');
-            obj.append('<li><a class="show_read" href="#">show read</a></li>');
-            obj.append('<li><a class="hide_read" href="#">hide read</a></li>');
+            obj.append('<li><a class="show_unread" href="#">All unread</a></li>');
+            obj.append('<li><a class="show_most_recent" href="#">Most recent</a></li>');
+            obj.append('<li><a class="show_starred" href="#">Show starred</a></li>');
             this.$el.html(obj.html());
         },
 
@@ -128,12 +129,17 @@ $(function() {
             this.collection.fetch({reset: true});
         },
 
-        show_read: function() {
+        show_unread: function() {
+            this.collection.fetch({reset:true, data: {show_read: false}});
+        },
+
+        show_most_recent: function() {
             this.collection.fetch({reset:true, data: {show_read: true}});
         },
 
-        hide_read: function() {
-            this.collection.fetch({reset:true, data: {show_read: false}});
+        show_starred: function() {
+            this.collection.fetch({reset:true,
+                data: {starred_only: true, show_read: true}});
         }
 
     });

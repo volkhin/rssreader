@@ -1,22 +1,15 @@
 #-*- coding: utf-8 -*-
-from flask import Flask, Blueprint, redirect, url_for, json
-from flask.ext.login import current_user
+from flask import Flask, json
 
 from .config import config
 from .database import db
 from .extensions import login_manager
 from feed import feed_blueprint
+from frontend import frontend_blueprint
 from user import user_blueprint, User
 
 
-main_blueprint = Blueprint('main', __name__)
-blueprints = (main_blueprint, user_blueprint, feed_blueprint,)
-
-@main_blueprint.route('/')
-def index():
-    if current_user.is_authenticated():
-        return redirect(url_for('feeds.list_entries'))
-    return "Landing page"
+blueprints = (frontend_blueprint, user_blueprint, feed_blueprint,)
 
 
 class AdvancedJSONEncoder(json.JSONEncoder):
