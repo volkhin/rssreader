@@ -70,12 +70,13 @@ $(function() {
         el: $('#entries'),
 
         initialize: function(options) {
-            _.bindAll(this, "render");
-            /* this.listenTo(this.collection, 'all', function(e) {
+            _.bindAll(this, 'render', 'addOne', 'reset');
+            this.listenTo(this.collection, 'all', function(e) {
                 console.log('entries', e);
-            }); */
+            }); 
             this.listenTo(this.collection, 'add', this.addOne);
             this.listenTo(this.collection, 'sync', this.render);
+            this.listenTo(this.collection, 'reset', this.reset);
             this.$el.prepend($('<div id="info"></div>'));
             this.info = this.$('#info');
         },
@@ -88,6 +89,51 @@ $(function() {
         addOne: function(m, c, opt) {
             var entryView = new EntryView({model: m});
             this.$el.append(entryView.render().el);
+        },
+
+        reset: function() {
+            // TODO: it's slow, add all elements at once
+            this.$el.html('');
+            this.collection.forEach(this.addOne);
+        }
+
+    });
+
+
+    var NavigationView = Backbone.View.extend({
+
+        el: $('#navigation'),
+
+        events: {
+            'click .refresh': 'refresh',
+            'click .show_read': 'show_read',
+            'click .hide_read': 'hide_read'
+        },
+
+        initialize: function() {
+            _.bindAll(this, 'render');
+            this.render();
+        },
+
+        render: function() {
+            var obj = $('<ul></ul>');
+            obj.append('<li><a class="refresh" href="#">Refresh</a></li>');
+            obj.append('<li><a class="all" href="#">All entries</a></li>');
+            obj.append('<li><a class="show_read" href="#">show read</a></li>');
+            obj.append('<li><a class="hide_read" href="#">hide read</a></li>');
+            this.$el.html(obj.html());
+        },
+
+        refresh: function() {
+            this.collection.fetch({reset: true});
+        },
+
+        show_read: function() {
+            this.collection.fetch({reset:true, data: {show_read: true}});
+        },
+
+        hide_read: function() {
+            this.collection.fetch({reset:true, data: {show_read: false}});
         }
 
     });
@@ -102,8 +148,9 @@ $(function() {
 
         index: function() {
             var collection = new EntriesList();
-            collection.fetch();
-            var App = new EntriesView({collection: collection});
+            collection.fetch({reset: true});
+            var App = new EntriesView({ collection: collection });
+            var Navigation = new NavigationView({ collection: collection });
         },
 
         about: function() {

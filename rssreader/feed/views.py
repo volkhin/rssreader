@@ -27,7 +27,9 @@ def list_entries(**kws):
         query = FeedEntry.query.join(Feed).filter(Feed.user_id==current_user.get_id())
         if 'feed_id' in data:
             query = query.filter(Feed.id==data['feed_id'])
-        if not current_user.show_read:
+        # if not current_user.show_read:
+        show_read = json.loads(data.get('show_read', 'false'))
+        if not show_read:
             query = query.filter(FeedEntry.read==False)
         if data.get('starred', False):
             query = query.filter(FeedEntry.starred==True)

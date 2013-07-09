@@ -24,3 +24,7 @@
 .clickable {
     cursor: pointer;
 }
+
+.entry > .entry-title.unread {
+    font-weight: bold;
+}
