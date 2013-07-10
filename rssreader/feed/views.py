@@ -41,12 +41,38 @@ class EntriesView(MethodView):
     def delete(self, entry_id):
         pass
 
-view = login_required(EntriesView.as_view('entries_api1'))
-feed_blueprint.add_url_rule('/api/1/entries', view_func=view,
+entries_view = login_required(EntriesView.as_view('entries_api1'))
+feed_blueprint.add_url_rule('/api/1/entries', view_func=entries_view,
         defaults={'entry_id': None}, methods=['GET',])
-feed_blueprint.add_url_rule('/api/1/entries', view_func=view,
+feed_blueprint.add_url_rule('/api/1/entries', view_func=entries_view,
         methods=['POST',])
-feed_blueprint.add_url_rule('/api/1/entries/<int:entry_id>', view_func=view,
+feed_blueprint.add_url_rule('/api/1/entries/<int:entry_id>', view_func=entries_view,
+        methods=['GET', 'PUT', 'DELETE',])
+
+
+class FeedsView(MethodView):
+    def get(self, feed_id):
+        query = Feed.query
+        if feed_id is not None:
+            query = query.filter_by(id=feed_id)
+        feeds = query.all()
+        return json.dumps(feeds)
+
+    def post(self):
+        pass
+
+    def put(self, feed_id):
+        pass
+
+    def delete(self, feed_id):
+        pass
+
+feeds_view = login_required(FeedsView.as_view('feeds_api1'))
+feed_blueprint.add_url_rule('/api/1/feeds', view_func=feeds_view,
+        defaults={'feed_id': None}, methods=['GET',])
+feed_blueprint.add_url_rule('/api/1/feeds', view_func=feeds_view,
+        methods=['POST',])
+feed_blueprint.add_url_rule('/api/1/feeds/<int:feed_id>', view_func=feeds_view,
         methods=['GET', 'PUT', 'DELETE',])
 
 
