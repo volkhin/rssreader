@@ -116,11 +116,9 @@ App.NavigationView = Backbone.View.extend({
 
     render: function() {
         this.$el.empty();
-        var obj = $('<ul></ul>');
-        obj.append('<li><a class="refresh" href="#">Refresh</a></li>');
-        obj.append('<li><a class="show_most_recent" href="#">Most recent</a></li>');
-        obj.append('<li><a class="show_starred" href="#">Show starred</a></li>');
-        this.$el.append(obj);
+        this.$el.append($('<li><a class="refresh" href="#">Refresh</a></li>'));
+        this.$el.append($('<li><a class="show_most_recent" href="#">Most recent</a></li>'));
+        this.$el.append($('<li><a class="show_starred" href="#">Show starred</a></li>'));
         return this;
     },
 
