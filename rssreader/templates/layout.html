@@ -11,7 +11,6 @@
         <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
         <script src="{{ url_for('static', filename='js/underscore.js') }}"></script>
         <script src="{{ url_for('static', filename='js/backbone.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 
         <script>
             showNotification = function(text) {
@@ -55,4 +54,6 @@
             {% endblock %}
         </div>
     </body>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </html>

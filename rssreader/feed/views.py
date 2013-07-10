@@ -16,7 +16,10 @@ class EntriesView(MethodView):
         # if 'feed_id' in data:
             # query = query.filter(Feed.id==data['feed_id'])
         if entry_id is not None:
-            query.filter(FeedEntry.id==entry_id)
+            query = query.filter(FeedEntry.id==entry_id)
+        feed_id = request.args.get('feed_id', None)
+        if feed_id:
+            query = query.filter(Feed.id==feed_id)
         # if not current_user.show_read:
         show_read = json.loads(request.args.get('show_read', 'false'))
         if not show_read:
