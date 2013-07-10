@@ -166,13 +166,12 @@ App.ShowReadWidget = Backbone.View.extend({
         console.log('render widget');
         var show = $('<span class="show_read">show</span>');
         var hide = $('<span class="hide_read">hide</span>');
-        if (this.model.get('show_read')) {
-            show.wrapInner('<strong />');
-            hide.wrapInner('<a href="#">');
-        } else {
-            hide.wrapInner('<strong />');
-            show.wrapInner('<a href="#">');
-        }
+        var showWrapper = (this.model.get('show_read') === true) ?
+            '<strong />' : '<a href="#">';
+        show.wrapInner(showWrapper);
+        var hideWrapper = (this.model.get('show_read') === false) ?
+            '<strong />' : '<a href="#">';
+        hide.wrapInner(hideWrapper);
         this.$el.html(this.template({
             show: show[0].outerHTML,
             hide: hide[0].outerHTML
@@ -181,12 +180,10 @@ App.ShowReadWidget = Backbone.View.extend({
     },
 
     showRead: function() {
-        console.log('show read()');
         this.model.save({show_read: true});
     },
 
     hideRead: function() {
-        console.log('hide read()');
         this.model.save({show_read: false});
     }
 });
@@ -196,12 +193,13 @@ App.SettingsView = Backbone.View.extend({
 
     initialize: function() {
         _.bindAll(this, 'render');
+        this.showReadWidget = new App.ShowReadWidget({model: this.model});
         this.render();
     },
 
     render: function() {
-        var showReadWidget = new App.ShowReadWidget({model: this.model});
-        this.$el.html(showReadWidget.render().el);
+        this.$el.children().detach();
+        this.$el.append(this.showReadWidget.render().$el);
         return this;
     }
 });
@@ -276,17 +274,17 @@ App.MainRouter = Backbone.Router.extend({
 window.globalEvents = _.extend({}, Backbone.Events);
 
 
+var settings = new App.Settings();
+settings.fetch({reset: true});
+var collection = new App.EntriesList();
+collection.fetch({reset: true});
+var feeds = new App.FeedsList();
+feeds.fetch({reset: true});
+
 $(function() {
-    var settings = new App.Settings();
-    settings.fetch({reset: true});
     var settingsView = new App.SettingsView({model: settings});
-    console.log('settings', settings);
-    var collection = new App.EntriesList();
-    collection.fetch({reset: true});
     var entriesView = new App.EntriesView({el: $('#entries'), collection: collection});
     var navigationView = new App.NavigationView({el: $('#navigation'), collection: collection });
-    var feeds = new App.FeedsList();
-    feeds.fetch({reset: true});
     var feedsView = new App.FeedsView({el: $('#feeds'), collection: feeds});
     var router = new App.MainRouter();
     Backbone.history.start();
