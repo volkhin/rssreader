@@ -41,13 +41,11 @@ App.EntryView = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this, "render");
         this.listenTo(this.model, 'change', this.render);
-        this.listenTo(this.model, 'all', function(e) {
-            console.log('Single entry', e);
-        });
         this.visible = false;
     },
 
     render: function() {
+        this.$el.empty();
         this.$el.html(this.template(this.model.toJSON()));
         if (this.visible) {
             this.$('.entry-content').show();
@@ -79,32 +77,23 @@ App.EntryView = Backbone.View.extend({
 
 App.EntriesView = Backbone.View.extend({
     initialize: function(options) {
-        _.bindAll(this, 'render', 'addOne', 'reset', 'showFeed');
-        this.listenTo(this.collection, 'all', function(e) {
-            console.log('entries', e);
-        }); 
+        _.bindAll(this, 'render', 'addOne', 'showFeed');
         this.listenTo(this.collection, 'add', this.addOne);
         this.listenTo(this.collection, 'sync', this.render);
-        this.listenTo(this.collection, 'reset', this.reset);
+        this.listenTo(this.collection, 'reset', this.render);
         globalEvents.on('navigate:feed', this.showFeed);
-        this.$el.prepend($('<div id="info"></div>'));
-        this.info = this.$('#info');
     },
 
     render: function() {
-        this.info.html('total entries: ' + this.collection.length);
+        // TODO: it's slow, add all elements at once
+        this.$el.children().detach();
+        this.collection.forEach(this.addOne);
         return this;
     },
 
     addOne: function(m, c, opt) {
         var entryView = new App.EntryView({model: m});
-        this.$el.append(entryView.render().el);
-    },
-
-    reset: function() {
-        // TODO: it's slow, add all elements at once
-        this.$el.html('');
-        this.collection.forEach(this.addOne);
+        this.$el.append(entryView.render().$el);
     },
 
     showFeed: function(feed) {
@@ -126,11 +115,13 @@ App.NavigationView = Backbone.View.extend({
     },
 
     render: function() {
+        this.$el.empty();
         var obj = $('<ul></ul>');
         obj.append('<li><a class="refresh" href="#">Refresh</a></li>');
         obj.append('<li><a class="show_most_recent" href="#">Most recent</a></li>');
         obj.append('<li><a class="show_starred" href="#">Show starred</a></li>');
-        this.$el.html(obj.html());
+        this.$el.append(obj);
+        return this;
     },
 
     refresh: function() {
@@ -142,8 +133,10 @@ App.NavigationView = Backbone.View.extend({
     },
 
     show_starred: function() {
-        this.collection.fetch({reset:true,
-            data: {starred_only: true, show_read: true}});
+        this.collection.fetch({
+            reset:true,
+            data: {starred_only: true, show_read: true}
+        });
     }
 });
 
@@ -163,7 +156,6 @@ App.ShowReadWidget = Backbone.View.extend({
     },
 
     render: function() {
-        console.log('render widget');
         var show = $('<span class="show_read">show</span>');
         var hide = $('<span class="hide_read">hide</span>');
         var showWrapper = (this.model.get('show_read') === true) ?
@@ -189,8 +181,6 @@ App.ShowReadWidget = Backbone.View.extend({
 });
 
 App.SettingsView = Backbone.View.extend({
-    el: $('#settings'),
-
     initialize: function() {
         _.bindAll(this, 'render');
         this.showReadWidget = new App.ShowReadWidget({model: this.model});
@@ -231,27 +221,21 @@ App.FeedView = Backbone.View.extend({
 
 App.FeedsView = Backbone.View.extend({
     initialize: function() {
-        _.bindAll(this, 'render', 'addOne', 'reset');
-        this.listenTo(this.collection, 'reset', this.reset);
+        _.bindAll(this, 'render', 'addOne');
+        this.listenTo(this.collection, 'reset', this.render);
+        this.listenTo(this.collection, 'sync', this.render);
         this.listenTo(this.collection, 'add', this.addOne);
-        /* this.listenTo(this.collection, 'all', function(e) {
-            console.log('feedsView', e);
-        }); */
     },
 
     render: function() {
-        this.$el.html('test feeds list');
+        this.$el.empty();
+        this.collection.forEach(this.addOne);
         return this;
     },
 
     addOne: function(m) {
         view = new App.FeedView({model: m});
         this.$el.append(view.render().el);
-    },
-
-    reset: function() {
-        this.$el.html('');
-        this.collection.forEach(this.addOne);
     }
 });
 
@@ -282,10 +266,22 @@ var feeds = new App.FeedsList();
 feeds.fetch({reset: true});
 
 $(function() {
-    var settingsView = new App.SettingsView({model: settings});
-    var entriesView = new App.EntriesView({el: $('#entries'), collection: collection});
-    var navigationView = new App.NavigationView({el: $('#navigation'), collection: collection });
-    var feedsView = new App.FeedsView({el: $('#feeds'), collection: feeds});
+    var settingsView = new App.SettingsView({
+        el: $('#settings'),
+        model: settings
+    });
+    var entriesView = new App.EntriesView({
+        el: $('#entries'),
+        collection: collection
+    });
+    var navigationView = new App.NavigationView({
+        el: $('#navigation'),
+        collection: collection
+    });
+    var feedsView = new App.FeedsView({
+        el: $('#feeds'),
+        collection: feeds
+    });
     var router = new App.MainRouter();
     Backbone.history.start();
 });
