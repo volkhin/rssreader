@@ -6,6 +6,8 @@ from ..database import db
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
+    _private_fields = ['password',]
+
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(256))
     password = db.Column(db.String(256))

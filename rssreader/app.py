@@ -20,8 +20,11 @@ class AdvancedJSONEncoder(json.JSONEncoder):
             return o.isoformat()
         if hasattr(o, 'is_db_model'):
             fields = {}
+            private_fields = getattr(o, '_private_fields', [])
             for field in o.__table__.columns:
                 name = field.name
+                if name in private_fields:
+                    continue
                 obj = getattr(o, name)
                 if isinstance(obj, unicode):
                     data = obj
