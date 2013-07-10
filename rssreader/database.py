@@ -11,6 +11,7 @@ from .config import config
 class DatabaseAbstraction(object):
     def __init__(self):
         self.Model = declarative_base() 
+        self.Model.is_db_model = True
         for module in sqlalchemy, sqlalchemy.orm:
             for key in module.__all__:
                 if not hasattr(self, key):

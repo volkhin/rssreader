@@ -18,7 +18,7 @@ class AdvancedJSONEncoder(json.JSONEncoder):
             return o
         if hasattr(o, 'isoformat'):
             return o.isoformat()
-        if isinstance(o, db.Model):
+        if hasattr(o, 'is_db_model'):
             fields = {}
             for field in o.__table__.columns:
                 name = field.name
