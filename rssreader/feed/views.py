@@ -20,8 +20,8 @@ class EntriesView(MethodView):
         feed_id = request.args.get('feed_id', None)
         if feed_id:
             query = query.filter(Feed.id==feed_id)
-        # if not current_user.show_read:
-        show_read = json.loads(request.args.get('show_read', 'false'))
+        show_read = current_user.show_read
+        # show_read = json.loads(request.args.get('show_read', 'false'))
         if not show_read:
             query = query.filter(FeedEntry.read==False)
         starred_only = json.loads(request.args.get('starred_only', 'false'))

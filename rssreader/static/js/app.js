@@ -22,6 +22,11 @@ App.FeedsList = Backbone.Collection.extend({
 });
 
 
+App.Settings = Backbone.Model.extend({
+    url: '/api/1/settings'
+});
+
+
 App.EntryView = Backbone.View.extend({
     tagName: "div",
 
@@ -111,7 +116,6 @@ App.EntriesView = Backbone.View.extend({
 App.NavigationView = Backbone.View.extend({
     events: {
         'click .refresh': 'refresh',
-        'click .show_unread': 'show_unread',
         'click .show_most_recent': 'show_most_recent',
         'click .show_starred': 'show_starred',
     },
@@ -124,7 +128,6 @@ App.NavigationView = Backbone.View.extend({
     render: function() {
         var obj = $('<ul></ul>');
         obj.append('<li><a class="refresh" href="#">Refresh</a></li>');
-        obj.append('<li><a class="show_unread" href="#">All unread</a></li>');
         obj.append('<li><a class="show_most_recent" href="#">Most recent</a></li>');
         obj.append('<li><a class="show_starred" href="#">Show starred</a></li>');
         this.$el.html(obj.html());
@@ -134,17 +137,72 @@ App.NavigationView = Backbone.View.extend({
         this.collection.fetch({reset: true});
     },
 
-    show_unread: function() {
-        this.collection.fetch({reset:true, data: {show_read: false}});
-    },
-
     show_most_recent: function() {
-        this.collection.fetch({reset:true, data: {show_read: true}});
+        this.collection.fetch({reset:true});
     },
 
     show_starred: function() {
         this.collection.fetch({reset:true,
             data: {starred_only: true, show_read: true}});
+    }
+});
+
+App.ShowReadWidget = Backbone.View.extend({
+    tagName: 'li',
+
+    template: _.template('<%= show %> / <%= hide %> read items'),
+
+    events: {
+        'click .show_read': 'showRead',
+        'click .hide_read': 'hideRead',
+    },
+
+    initialize: function() {
+        _.bindAll(this, 'render', 'showRead', 'hideRead');
+        this.listenTo(this.model, 'change:show_read', this.render);
+    },
+
+    render: function() {
+        console.log('render widget');
+        var show = $('<span class="show_read">show</span>');
+        var hide = $('<span class="hide_read">hide</span>');
+        if (this.model.get('show_read')) {
+            show.wrapInner('<strong />');
+            hide.wrapInner('<a href="#">');
+        } else {
+            hide.wrapInner('<strong />');
+            show.wrapInner('<a href="#">');
+        }
+        this.$el.html(this.template({
+            show: show[0].outerHTML,
+            hide: hide[0].outerHTML
+        }));
+        return this;
+    },
+
+    showRead: function() {
+        console.log('show read()');
+        this.model.save({show_read: true});
+    },
+
+    hideRead: function() {
+        console.log('hide read()');
+        this.model.save({show_read: false});
+    }
+});
+
+App.SettingsView = Backbone.View.extend({
+    el: $('#settings'),
+
+    initialize: function() {
+        _.bindAll(this, 'render');
+        this.render();
+    },
+
+    render: function() {
+        var showReadWidget = new App.ShowReadWidget({model: this.model});
+        this.$el.html(showReadWidget.render().el);
+        return this;
     }
 });
 
@@ -178,9 +236,9 @@ App.FeedsView = Backbone.View.extend({
         _.bindAll(this, 'render', 'addOne', 'reset');
         this.listenTo(this.collection, 'reset', this.reset);
         this.listenTo(this.collection, 'add', this.addOne);
-        this.listenTo(this.collection, 'all', function(e) {
+        /* this.listenTo(this.collection, 'all', function(e) {
             console.log('feedsView', e);
-        });
+        }); */
     },
 
     render: function() {
@@ -219,6 +277,10 @@ window.globalEvents = _.extend({}, Backbone.Events);
 
 
 $(function() {
+    var settings = new App.Settings();
+    settings.fetch({reset: true});
+    var settingsView = new App.SettingsView({model: settings});
+    console.log('settings', settings);
     var collection = new App.EntriesList();
     collection.fetch({reset: true});
     var entriesView = new App.EntriesView({el: $('#entries'), collection: collection});
