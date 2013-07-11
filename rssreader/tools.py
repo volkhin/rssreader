@@ -11,12 +11,15 @@ from .user import User
 
 def fetch_feeds():
     for feed in Feed.query.all():
-        enqueue(update_feed, feed.id)
+        add_feed_to_update_queue(feed)
 
-def update_feed(feed_id):
+def update_feed_wrapper(feed_id):
     db.init()
     Feed.query.get(feed_id).update()
     db.teardown()
+
+def add_feed_to_update_queue(feed):
+    enqueue(update_feed_wrapper, feed.id)
 
 def import_ompl():
     outline = opml.parse("rssreader/subscriptions.xml")
@@ -24,7 +27,7 @@ def import_ompl():
         rss_url = entry.xmlUrl
         print rss_url
         user = User.query.filter_by(login='admin').first()
-        feed = Feed(rss_url, user.get_id())
+        feed = Feed(url=rss_url, user_id=user.get_id())
         db.session.add(feed)
         db.session.commit()
         feed.update()

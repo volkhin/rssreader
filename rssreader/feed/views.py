@@ -4,6 +4,7 @@ from flask import Blueprint, request, abort, json
 from flask.ext.login import current_user, login_required
 from flask.views import MethodView
 
+from ..tools import add_feed_to_update_queue
 from ..database import db
 from .models import Feed, FeedEntry
 
@@ -62,7 +63,13 @@ class FeedsView(MethodView):
         return json.dumps(feeds)
 
     def post(self):
-        pass
+        data = json.loads(request.data)
+        feed = Feed(title=data['title'], url=data['url'],
+                user_id=current_user.get_id())
+        db.session.add(feed)
+        db.session.commit()
+        add_feed_to_update_queue(feed)
+        return json.dumps(data)
 
     def put(self, feed_id):
         pass

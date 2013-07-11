@@ -42,16 +42,12 @@ class FeedEntry(db.Model):
 class Feed(db.Model):
     __tablename__ = 'feeds'
     id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(256))
+    url = db.Column(db.String(256), db.CheckConstraint('length(url)>1'))
     title = db.Column(db.String(256))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     entries = db.relationship('FeedEntry', backref=db.backref('feed'), lazy='dynamic')
     unread_count = db.Column(db.Integer, default=0)
     db.UniqueConstraint('url', 'user_id')
-
-    def __init__(self, url, user_id):
-        self.url = url
-        self.user_id = user_id
 
     def get_title(self):
         return self.title or self.url

@@ -14,17 +14,6 @@
 <div id="page" class="top-buffer">
     <div id="alerts">
     </div>
-
-    {#
-    <div>
-        <form class="form-inline" method="post" action="{{ url_for('feeds.subscribe') }}">
-            {{ subscribe_form.csrf_token }}
-            {{ subscribe_form.url(class="input", placeholder=subscribe_form.url.label.text) }}
-            {{ subscribe_form.submit(class="btn btn-medium") }}
-        </form>
-    </div>
-    #}
-
     <div class="row">
         <div class="span3">
             <ul id="settings" class="sidebar">
