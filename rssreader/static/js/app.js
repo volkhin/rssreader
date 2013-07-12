@@ -134,7 +134,7 @@ App.NavigationView = Backbone.View.extend({
     },
 
     render: function() {
-        this.$el.empty();
+        this.$el.children().detach();
         this.$el.append(this.subscriptionWidget.render().$el);
         this.$el.append(this.showReadWidget.render().$el);
         this.$el.append($('<li><a class="refresh" href="#">Refresh</a></li>'));
