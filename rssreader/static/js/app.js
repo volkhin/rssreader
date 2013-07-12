@@ -303,15 +303,12 @@ App.MainRouter = Backbone.Router.extend({
 });
 
 
-App.globalEvents = _.extend({}, Backbone.Events);
-App.settings = new App.Settings();
-App.settings.fetch({reset: true});
-App.entries = new App.EntriesList();
-App.entries.fetch({reset: true});
-App.feeds = new App.FeedsList();
-App.feeds.fetch({reset: true});
-
 $(function() {
+    App.globalEvents = _.extend({}, Backbone.Events);
+    App.settings = new App.Settings();
+    App.entries = new App.EntriesList();
+    App.feeds = new App.FeedsList();
+
     var entriesView = new App.EntriesView({
         el: $('#entries'),
         collection: App.entries
@@ -326,4 +323,8 @@ $(function() {
     });
     var router = new App.MainRouter();
     Backbone.history.start();
+
+    App.settings.fetch({reset: true});
+    App.entries.fetch({reset: true});
+    App.feeds.fetch({reset: true});
 });
