@@ -14,7 +14,7 @@ class FeedEntry(db.Model):
     title = db.Column(db.String(256))
     content = db.Column(db.Text)
     feed_id = db.Column(db.Integer, db.ForeignKey('feeds.id'))
-    # created_at = db.Column(db.DateTime)
+    created_at = db.Column(db.JSONDateTime)
     read = db.Column(db.Boolean, default=False)
     starred = db.Column(db.Boolean, default=False)
     db.UniqueConstraint('url', 'user_id')
@@ -80,6 +80,7 @@ class Feed(db.Model):
                         url=url,
                         title=title,
                         content=content,
+                        created_at=created_at,
                         feed=self)
                 db.session.add(feed_entry)
         db.session.commit()

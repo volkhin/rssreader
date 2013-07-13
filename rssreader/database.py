@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
+import iso8601
 import sqlalchemy
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, TypeDecorator
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.types import DateTime
 
 from .config import config
 
@@ -40,6 +42,17 @@ class DatabaseAbstraction(object):
 
     def teardown(self):
         self.session.remove()
+
+    class JSONDateTime(TypeDecorator):
+        impl = DateTime
+
+        def process_bind_param(self, value, dialect):
+            if isinstance(value, basestring):
+                try:
+                    value = iso8601.parse_date(value)
+                except:
+                    pass
+            return value
 
 
 db = DatabaseAbstraction()

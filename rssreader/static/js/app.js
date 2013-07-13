@@ -58,7 +58,9 @@ App.EntryView = Backbone.View.extend({
     },
 
     render: function() {
-        var obj = $(this.template(this.model.toJSON()));
+        var date = new Date(this.model.get('created_at')).toLocaleString();
+        var data = _.extend(this.model.toJSON(), {date: date});
+        var obj = $(this.template(data));
         if (this.visible) {
             obj.find('.entry-content').show();
         } else {
@@ -227,6 +229,8 @@ App.SubscriptionWidget = Backbone.View.extend({
             }
             App.feeds.create({
                 url: modalForm.find('#url').val()
+            }, {
+                wait: true
             });
             modalForm.modal('hide');
         });
