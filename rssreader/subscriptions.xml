@@ -8,5 +8,15 @@
             type="rss" xmlUrl="http://larrr.com/feed/rss/" htmlUrl="http://larrr.com"/>
         <outline text="mnmlist" title="mnmlist" type="rss"
             xmlUrl="http://feeds.feedburner.com/mnmlist" htmlUrl="http://mnmlist.com"/>
+        <outline text="mnmlist" title="mnmlist" type="rss"
+            xmlUrl="http://feeds.feedburner.com/mnmlist" htmlUrl="http://mnmlist.com"/>
+        <outline text="mnmlist" title="mnmlist" type="rss"
+            xmlUrl="http://feeds.feedburner.com/mnmlist" htmlUrl="http://mnmlist.com"/>
+        <outline text="mnmlist" title="mnmlist" type="rss"
+            xmlUrl="http://feeds.feedburner.com/mnmlist" htmlUrl="http://mnmlist.com"/>
+        <outline text="mnmlist" title="mnmlist" type="rss"
+            xmlUrl="http://feeds.feedburner.com/mnmlist" htmlUrl="http://mnmlist.com"/>
+        <outline text="mnmlist" title="mnmlist" type="rss"
+            xmlUrl="http://feeds.feedburner.com/mnmlist" htmlUrl="http://mnmlist.com"/>
     </body>
 </opml>

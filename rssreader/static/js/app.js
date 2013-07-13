@@ -97,7 +97,7 @@ App.EntriesView = Backbone.View.extend({
     initialize: function(options) {
         _.bindAll(this, 'render', 'addOne');
         this.listenTo(this.collection, 'add', this.addOne);
-        // this.listenTo(this.collection, 'sync', this.render);
+        // this.listenTo(this.collection, 'sync', this.render); #FIXME
         this.listenTo(this.collection, 'reset', this.render);
     },
 
@@ -118,12 +118,14 @@ App.EntriesView = Backbone.View.extend({
 App.NavigationView = Backbone.View.extend({
     events: {
         'click .update_feeds': 'update_feeds',
+        'click .manage-feeds': 'manage_feeds',
         'click .refresh': 'refresh'
     },
 
     initialize: function() {
         _.bindAll(this, 'update_feeds', 'refresh', 'render');
         this.subscriptionWidget = new App.SubscriptionWidget();
+        this.manageFeedsWidget = new App.ManageFeedsWidget({collection: App.feeds});
         this.showReadWidget = new App.ShowReadWidget({model: App.settings});
         this.render();
     },
@@ -131,16 +133,24 @@ App.NavigationView = Backbone.View.extend({
     render: function() {
         this.$el.children().detach();
         this.$el.append(this.subscriptionWidget.render().$el);
+        this.$el.append($('<li><a class="manage-feeds" href="">Manage feeds...</a></li>'));
         this.$el.append(this.showReadWidget.render().$el);
         this.$el.append($('<li><a class="update_feeds" href="">Update feeds</a></li>'));
         this.$el.append($('<li><a class="refresh" href="">Refresh</a></li>'));
         this.$el.append($('<li><a class="show_all" href="/">All entries</a></li>'));
-        this.$el.append($('<li><a class="show_starred" href="starred">Show starred</a></li>'));
+        this.$el.append($('<li><a class="show_starred" href="feeds/starred">Show starred</a></li>'));
         return this;
     },
 
     update_feeds: function() {
         $.get('/update_feeds');
+        return false;
+    },
+
+    manage_feeds: function() {
+        var view = new App.ManageFeedsWidget({collection: App.feeds});
+        view.render();
+        view.show();
         return false;
     },
 
@@ -242,6 +252,7 @@ App.SubscriptionWidget = Backbone.View.extend({
             modalForm.modal('hide');
         });
         modalForm.modal('show');
+        return false;
     }
 });
 
@@ -251,6 +262,9 @@ App.FeedsView = Backbone.View.extend({
         _.bindAll(this, 'render', 'addOne');
         this.listenTo(this.collection, 'reset', this.render);
         this.listenTo(this.collection, 'sync', this.render);
+        this.listenTo(this.collection, 'change', this.render);
+        this.listenTo(this.collection, 'remove', this.render);
+        this.listenTo(this.collection, 'destroy', this.render);
         this.listenTo(this.collection, 'add', this.addOne);
     },
 
@@ -269,15 +283,78 @@ App.FeedsView = Backbone.View.extend({
 });
 
 
+App.ManageFeedLine = Backbone.View.extend({
+    tagName: 'li',
+
+    template: _.template($('#manage-feed-item-template').html()),
+
+    events: {
+        'click .remove-feed': 'remove_feed'
+    },
+
+    initialize: function() {
+        _.bindAll(this, 'render', 'remove_feed');
+    },
+
+    render: function() {
+        this.$el.empty();
+        this.$el.html(this.template(this.model.toJSON()));
+        return this;
+    },
+
+    remove_feed: function() {
+        this.model.destroy();
+        return false;
+    }
+});
+
+
+App.ManageFeedsWidget = Backbone.View.extend({
+    el: $('#manage-feeds-form'),
+
+    initialize: function() {
+        _.bindAll(this, 'render', 'show');
+        this.listenTo(this.collection, 'sync', this.render);
+        this.listenTo(this.collection, 'reset', this.render);
+        this.listenTo(this.collection, 'change', this.render);
+        this.listenTo(this.collection, 'remove', this.render);
+        this.listenTo(this.collection, 'destroy', this.render);
+    },
+
+    render: function() {
+        this.$('ul').empty();
+        var self = this;
+        this.collection.each(function(feed) {
+            var feedView = new App.ManageFeedLine({model: feed});
+            self.$('ul').append(feedView.render().el);
+        });
+        return this;
+    },
+
+    show: function() {
+        this.$el.modal('show');
+    }
+});
+
+
 App.MainRouter = Backbone.Router.extend({
     routes: {
         "": "index",
+        "feeds/starred": "showStarred",
         "feeds/:id": "showFeed",
-        "starred": "showStarred",
     },
 
     initialize: function() {
         _.bindAll(this, 'refreshPage', 'navigate');
+    },
+
+    refreshPage: function(options) {
+        this.navigate(document.location.hash, options);
+    },
+
+    navigate: function(fragment, options) {
+        Backbone.history.fragment = null;
+        Backbone.history.navigate(fragment, options);
     },
 
     index: function() {
@@ -293,15 +370,6 @@ App.MainRouter = Backbone.Router.extend({
             reset:true,
             data: {starred_only: true, show_read: true}
         });
-    },
-
-    refreshPage: function(options) {
-        this.navigate(document.location.hash, options);
-    },
-
-    navigate: function(fragment, options) {
-        Backbone.history.fragment = null;
-        Backbone.history.navigate(fragment, options);
     }
 });
 

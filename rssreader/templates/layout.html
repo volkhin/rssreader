@@ -43,6 +43,11 @@
                 </form>
             </div>
         </script>
+
+        <script type="text/template" id="manage-feed-item-template">
+            <%= title %> - 
+            <a href='#' class='remove-feed'>remove</a>
+        </script>
     </head>
     <body>
         {% block header %}
@@ -74,6 +79,23 @@
             {% block body %}
             {% endblock %}
         </div>
+
+        <div id="manage-feeds-form" class="modal hide fade" tabindex=-1 role="dialog"
+            aria-labelledby="modal-form-title" aria-hidden="true">
+            <form class="form-inline">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="modal-form-title">Manage
+                        subscriptions</h3>
+                </div>
+                <div class="modal-body">
+                    <ul>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
     </body>
 
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>

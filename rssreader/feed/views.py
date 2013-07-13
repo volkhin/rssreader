@@ -43,7 +43,9 @@ class EntriesView(MethodView):
         return json.dumps(FeedEntry.query.get(entry_id))
 
     def delete(self, entry_id):
-        pass
+        FeedEntry.query.filter_by(id=entry_id).delete()
+        db.session.commit()
+        return '{}'
 
 entries_view = login_required(EntriesView.as_view('entries_api1'))
 feed_blueprint.add_url_rule('/api/1/entries', view_func=entries_view,
@@ -75,7 +77,9 @@ class FeedsView(MethodView):
         pass
 
     def delete(self, feed_id):
-        pass
+        Feed.query.filter_by(id=feed_id).delete()
+        db.session.commit()
+        return '{}'
 
 feeds_view = login_required(FeedsView.as_view('feeds_api1'))
 feed_blueprint.add_url_rule('/api/1/feeds', view_func=feeds_view,
