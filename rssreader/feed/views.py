@@ -28,7 +28,7 @@ class EntriesView(MethodView):
         starred_only = json.loads(request.args.get('starred_only', 'false'))
         if starred_only:
             query = query.filter(FeedEntry.starred==True)
-        # query = query.order_by(FeedEntry.created_at.desc()) # TODO: uncomment
+        query = query.order_by(FeedEntry.created_at.desc())
         entries = query.all()
         return json.dumps(entries)
 
