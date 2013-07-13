@@ -21,6 +21,10 @@
     margin-top: 20px;
 }
 
+.bottom-buffer {
+    margin-top: 20px;
+}
+
 .clickable {
     cursor: pointer;
 }
