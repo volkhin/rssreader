@@ -20,7 +20,7 @@ def initdb():
     db.session.add(admin)
     db.session.add(user2)
     db.session.commit()
-    rssreader.tools.import_ompl()
+    rssreader.tools.import_opml(1, url="rssreader/subscriptions.xml")
 
 @manager.command
 def fetch_feeds():

@@ -179,10 +179,10 @@ App.ShowReadWidget = Backbone.View.extend({
         var show = $('<span class="show_read">show</span>');
         var hide = $('<span class="hide_read">hide</span>');
         var showWrapper = (this.model.get('show_read') === true) ?
-            '<strong />' : '<a href="#">';
+            '<strong/>' : '<a href="#">';
         show.wrapInner(showWrapper);
         var hideWrapper = (this.model.get('show_read') === false) ?
-            '<strong />' : '<a href="#">';
+            '<strong/>' : '<a href="#">';
         hide.wrapInner(hideWrapper);
         this.$el.html(this.template({
             show: show[0].outerHTML,
@@ -239,7 +239,7 @@ App.SubscriptionWidget = Backbone.View.extend({
         modalForm.on('shown', function(e) {
             modalForm.find('#url').focus();
         });
-        modalForm.find('form').submit(function(e) {
+        modalForm.find('#url-form').submit(function(e) {
             // TODO: validate enetered url, both on client and server?
             if (modalForm.find('#url').is(':invalid')) {
                 return false;
@@ -250,6 +250,12 @@ App.SubscriptionWidget = Backbone.View.extend({
                 wait: true
             });
             modalForm.modal('hide');
+        });
+        modalForm.find('#opml-form').find(':button').click(function(e) {
+            modalForm.find('#opml').upload(App.root + 'upload_opml', function(res) {
+            });
+            modalForm.modal('hide');
+            return false;
         });
         modalForm.modal('show');
         return false;
@@ -375,6 +381,7 @@ App.MainRouter = Backbone.Router.extend({
 
 
 $(function() {
+    App.root = 'http://127.0.0.1:5000/'; // FIXME: how to get on the fly?
     App.globalEvents = _.extend({}, Backbone.Events);
     App.settings = new App.Settings();
     App.entries = new App.EntriesList();

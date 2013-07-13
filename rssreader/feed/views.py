@@ -28,7 +28,7 @@ class EntriesView(MethodView):
         starred_only = json.loads(request.args.get('starred_only', 'false'))
         if starred_only:
             query = query.filter(FeedEntry.starred==True)
-        # query = query.order_by(FeedEntry.created_at.desc())
+        # query = query.order_by(FeedEntry.created_at.desc()) # TODO: uncomment
         entries = query.all()
         return json.dumps(entries)
 
@@ -77,6 +77,7 @@ class FeedsView(MethodView):
         pass
 
     def delete(self, feed_id):
+        # TODO: delete all entries for this feed
         Feed.query.filter_by(id=feed_id).delete()
         db.session.commit()
         return '{}'

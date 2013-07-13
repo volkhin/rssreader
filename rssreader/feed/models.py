@@ -47,7 +47,7 @@ class Feed(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     entries = db.relationship('FeedEntry', backref=db.backref('feed'), lazy='dynamic')
     unread_count = db.Column(db.Integer, default=0)
-    db.UniqueConstraint('url', 'user_id')
+    db.UniqueConstraint('url', 'user_id') # FIXME: looks like it doesn't work
 
     def get_title(self):
         return self.title or self.url
