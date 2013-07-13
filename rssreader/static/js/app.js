@@ -173,12 +173,20 @@ App.ShowReadWidget = Backbone.View.extend({
     },
 
     showRead: function(e) {
-        this.model.save({show_read: true});
+        this.model.save({show_read: true}, {
+            success: function() {
+                App.router.refreshPage(true);
+            }
+        });
         return false;
     },
 
     hideRead: function(e) {
-        this.model.save({show_read: false});
+        this.model.save({show_read: false}, {
+            success: function() {
+                App.router.refreshPage(true);
+            }
+        });
         return false;
     }
 });
