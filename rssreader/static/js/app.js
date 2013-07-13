@@ -3,7 +3,6 @@ window.App = {};
 var trigger = _.wrap(Backbone.Events.trigger, function() {
     var f = Array.prototype.splice.call(arguments, 0, 1)[0];
     console.log('event', arguments);
-    // console.log(f)
     f.apply(this, arguments);
 });
 // Backbone.Model.prototype.trigger = trigger;
@@ -94,11 +93,10 @@ App.EntryView = Backbone.View.extend({
 
 App.EntriesView = Backbone.View.extend({
     initialize: function(options) {
-        _.bindAll(this, 'render', 'addOne', 'showFeed');
+        _.bindAll(this, 'render', 'addOne');
         this.listenTo(this.collection, 'add', this.addOne);
         // this.listenTo(this.collection, 'sync', this.render);
         this.listenTo(this.collection, 'reset', this.render);
-        App.globalEvents.on('navigate:feed', this.showFeed);
     },
 
     render: function() {
@@ -111,10 +109,6 @@ App.EntriesView = Backbone.View.extend({
     addOne: function(m, c, opt) {
         var entryView = new App.EntryView({model: m});
         this.$el.append(entryView.render().$el);
-    },
-
-    showFeed: function(feed) {
-        this.collection.fetch({reset:true, data: {feed_id: feed.get('id')}});
     }
 });
 
@@ -122,8 +116,6 @@ App.EntriesView = Backbone.View.extend({
 App.NavigationView = Backbone.View.extend({
     events: {
         'click .refresh': 'refresh',
-        'click .show_most_recent': 'show_most_recent',
-        'click .show_starred': 'show_starred',
     },
 
     initialize: function() {
@@ -137,25 +129,15 @@ App.NavigationView = Backbone.View.extend({
         this.$el.children().detach();
         this.$el.append(this.subscriptionWidget.render().$el);
         this.$el.append(this.showReadWidget.render().$el);
-        this.$el.append($('<li><a class="refresh" href="#">Refresh</a></li>'));
-        this.$el.append($('<li><a class="show_most_recent" href="#">Most recent</a></li>'));
-        this.$el.append($('<li><a class="show_starred" href="#">Show starred</a></li>'));
+        this.$el.append($('<li><a class="refresh" href="">Refresh</a></li>'));
+        this.$el.append($('<li><a class="show_all" href="/">All entries</a></li>'));
+        this.$el.append($('<li><a class="show_starred" href="starred">Show starred</a></li>'));
         return this;
     },
 
     refresh: function() {
-        this.collection.fetch({reset: true});
-    },
-
-    show_most_recent: function() {
-        this.collection.fetch({reset:true});
-    },
-
-    show_starred: function() {
-        this.collection.fetch({
-            reset:true,
-            data: {starred_only: true, show_read: true}
-        });
+        App.router.refreshPage(true);
+        return false;
     }
 });
 
@@ -190,12 +172,14 @@ App.ShowReadWidget = Backbone.View.extend({
         return this;
     },
 
-    showRead: function() {
+    showRead: function(e) {
         this.model.save({show_read: true});
+        return false;
     },
 
-    hideRead: function() {
+    hideRead: function(e) {
         this.model.save({show_read: false});
+        return false;
     }
 });
 
@@ -243,30 +227,6 @@ App.SubscriptionWidget = Backbone.View.extend({
 });
 
 
-App.FeedView = Backbone.View.extend({
-    tagName: 'li',
-
-    template: _.template('<a href="#"><%- title || url %></a>'),
-
-    events: {
-        'click a': 'onClick',
-    },
-
-    initialize: function() {
-        _.bindAll(this, 'render', 'onClick');
-    },
-
-    render: function() {
-        this.$el.html(this.template(this.model.toJSON()));
-        return this;
-    },
-
-    onClick: function() {
-        App.globalEvents.trigger('navigate:feed', this.model);
-    }
-});
-
-
 App.FeedsView = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this, 'render', 'addOne');
@@ -275,6 +235,8 @@ App.FeedsView = Backbone.View.extend({
         this.listenTo(this.collection, 'add', this.addOne);
     },
 
+    template: _.template('<li><a href="feeds/<%= id %>"><%- title || url %></a></li>'),
+
     render: function() {
         this.$el.empty();
         this.collection.forEach(this.addOne);
@@ -282,8 +244,8 @@ App.FeedsView = Backbone.View.extend({
     },
 
     addOne: function(m) {
-        view = new App.FeedView({model: m});
-        this.$el.append(view.render().el);
+        link_el = this.template(m.toJSON());
+        this.$el.append(link_el);
     }
 });
 
@@ -291,14 +253,36 @@ App.FeedsView = Backbone.View.extend({
 App.MainRouter = Backbone.Router.extend({
     routes: {
         "": "index",
-        "about": "about"
+        "feeds/:id": "showFeed",
+        "starred": "showStarred",
+    },
+
+    initialize: function() {
+        _.bindAll(this, 'refreshPage', 'navigate');
     },
 
     index: function() {
+        App.entries.fetch({reset: true});
     },
 
-    about: function() {
-        $('body').html('about page');
+    showFeed: function(id) {
+        App.entries.fetch({reset:true, data: {feed_id: id}});
+    },
+
+    showStarred: function() {
+        App.entries.fetch({
+            reset:true,
+            data: {starred_only: true, show_read: true}
+        });
+    },
+
+    refreshPage: function(options) {
+        this.navigate(document.location.hash, options);
+    },
+
+    navigate: function(fragment, options) {
+        Backbone.history.fragment = null;
+        Backbone.history.navigate(fragment, options);
     }
 });
 
@@ -309,22 +293,29 @@ $(function() {
     App.entries = new App.EntriesList();
     App.feeds = new App.FeedsList();
 
-    var entriesView = new App.EntriesView({
+    App.entriesView = new App.EntriesView({
         el: $('#entries'),
         collection: App.entries
     });
-    var navigationView = new App.NavigationView({
+    App.navigationView = new App.NavigationView({
         el: $('#navigation'),
         collection: App.entries
     });
-    var feedsView = new App.FeedsView({
+    App.feedsView = new App.FeedsView({
         el: $('#feeds'),
         collection: App.feeds
     });
-    var router = new App.MainRouter();
+    App.router = new App.MainRouter();
+    $(document).on('click', 'a[href]:not([data-bypass])', function(e) {
+        var href = {prop: $(this).prop('href'), attr: $(this).attr('href')};
+        var root = location.protocol + '//' + location.host;// + app.root;
+        if (href.prop.slice(0, root.length) === root) {
+            e.preventDefault();
+            App.router.navigate(href.attr, true);
+        }
+    });
     Backbone.history.start();
 
     App.settings.fetch({reset: true});
-    App.entries.fetch({reset: true});
     App.feeds.fetch({reset: true});
 });
