@@ -117,11 +117,12 @@ App.EntriesView = Backbone.View.extend({
 
 App.NavigationView = Backbone.View.extend({
     events: {
-        'click .refresh': 'refresh',
+        'click .update_feeds': 'update_feeds',
+        'click .refresh': 'refresh'
     },
 
     initialize: function() {
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'update_feeds', 'refresh', 'render');
         this.subscriptionWidget = new App.SubscriptionWidget();
         this.showReadWidget = new App.ShowReadWidget({model: App.settings});
         this.render();
@@ -131,10 +132,16 @@ App.NavigationView = Backbone.View.extend({
         this.$el.children().detach();
         this.$el.append(this.subscriptionWidget.render().$el);
         this.$el.append(this.showReadWidget.render().$el);
+        this.$el.append($('<li><a class="update_feeds" href="">Update feeds</a></li>'));
         this.$el.append($('<li><a class="refresh" href="">Refresh</a></li>'));
         this.$el.append($('<li><a class="show_all" href="/">All entries</a></li>'));
         this.$el.append($('<li><a class="show_starred" href="starred">Show starred</a></li>'));
         return this;
+    },
+
+    update_feeds: function() {
+        $.get('/update_feeds');
+        return false;
     },
 
     refresh: function() {

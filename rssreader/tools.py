@@ -12,8 +12,11 @@ from .feed import Feed
 from .user import User
 
 
-def fetch_feeds():
-    for feed in Feed.query.all():
+def fetch_feeds(user_id=None):
+    query = Feed.query
+    if user_id is not None:
+        query = query.filter_by(user_id=user_id)
+    for feed in query.all():
         add_feed_to_update_queue(feed)
 
 def update_feed_wrapper(feed_id):
