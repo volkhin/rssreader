@@ -1,5 +1,8 @@
 #-*- coding: utf-8 -*-
+import logging
+
 import opml
+import redis
 from redis import Redis
 from rq import Queue
 
@@ -19,6 +22,7 @@ def update_feed_wrapper(feed_id):
     db.teardown()
 
 def add_feed_to_update_queue(feed):
+    # TODO: catch exception if redis is unavailable
     enqueue(update_feed_wrapper, feed.id)
 
 def import_ompl():
@@ -34,5 +38,8 @@ def import_ompl():
 
 def enqueue(func, *args):
     q = Queue(connection=Redis(**config.REDIS_CONNECTION_OPTIONS))
-    j = q.enqueue(func, *args)
-    print j
+    try:
+        j = q.enqueue(func, *args)
+        print j
+    except redis.exceptions.ConnectionError, e:
+        logging.error('Redis connection error: %s', e)
