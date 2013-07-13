@@ -40,7 +40,7 @@ class EntriesView(MethodView):
         received_obj = json.loads(request.data)
         FeedEntry.query.filter_by(id=entry_id).update(received_obj)
         db.session.commit()
-        return json.dumps(received_obj)
+        return json.dumps(FeedEntry.query.get(entry_id))
 
     def delete(self, entry_id):
         pass
@@ -69,7 +69,7 @@ class FeedsView(MethodView):
         db.session.add(feed)
         db.session.commit()
         add_feed_to_update_queue(feed)
-        return json.dumps(data)
+        return json.dumps(feed)
 
     def put(self, feed_id):
         pass
