@@ -2,7 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'bootstrap'
+    'bootstrap',
+    'jquery-upload'
 ], function($, _, Backbone) {
     var SubscriptionWidget = Backbone.View.extend({
         tagName: 'li',
@@ -17,7 +18,6 @@ define([
 
         initialize: function(options) {
             _.bindAll(this, 'render', 'onClick');
-            console.log(options, this);
         },
 
         render: function() {
@@ -46,9 +46,9 @@ define([
                 });
                 modalForm.modal('hide');
             });
-            modalForm.find('#opml-form').find(':button').click(function(e) {
+            modalForm.find('#opml-form').find(':file').change(function(e) {
                 // FIXME: user relative url, not /upload_opml
-                modalForm.find('#opml').upload('/upload_opml', function(res) {
+                $(this).upload('/upload_opml', function(res) {
                 });
                 modalForm.modal('hide');
                 return false;

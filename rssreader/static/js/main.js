@@ -4,7 +4,8 @@ require.config({
         'jquery': 'libs/jquery',
         'bootstrap': 'libs/bootstrap',
         'underscore': 'libs/underscore',
-        'backbone': 'libs/backbone'
+        'backbone': 'libs/backbone',
+        'jquery-upload': 'libs/jquery.upload-1.0.2'
     },
 
     shim: {
