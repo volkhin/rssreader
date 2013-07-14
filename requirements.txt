@@ -11,3 +11,4 @@ feedparser
 bleach
 SQLAlchemy
 iso8601
+psycopg2

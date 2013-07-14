@@ -13,7 +13,7 @@ class FeedEntry(db.Model):
     url = db.Column(db.String(256), index=True)
     title = db.Column(db.String(256))
     content = db.Column(db.Text)
-    feed_id = db.Column(db.Integer, db.ForeignKey('feeds.id'))
+    feed_id = db.Column(db.Integer, db.ForeignKey('feeds.id', ondelete='CASCADE'))
     created_at = db.Column(db.JSONDateTime)
     read = db.Column(db.Boolean, default=False)
     starred = db.Column(db.Boolean, default=False)
@@ -45,7 +45,8 @@ class Feed(db.Model):
     url = db.Column(db.String(256), db.CheckConstraint('length(url)>1'))
     title = db.Column(db.String(256))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    entries = db.relationship('FeedEntry', backref=db.backref('feed'), lazy='dynamic')
+    entries = db.relationship('FeedEntry', backref=db.backref('feed'),
+            lazy='dynamic', cascade='all, delete-orphan', passive_deletes=True)
     unread_count = db.Column(db.Integer, default=0)
     __table_args__ = (db.UniqueConstraint('url', 'user_id'),)
 
@@ -63,6 +64,8 @@ class Feed(db.Model):
 
         data = feedparser.parse(self.url)
         self.title = data.feed.title
+        db.session.merge(self)
+        db.session.commit()
         for entry in data.entries:
             url = entry.link
             title = entry.title

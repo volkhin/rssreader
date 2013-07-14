@@ -28,7 +28,6 @@ define([
             this.feeds.fetch({reset: true});
 
             this.entries = new EntriesList();
-            this.entries.fetch({reset: true});
 
             // Adding views
             this.feedsView = new FeedsView({

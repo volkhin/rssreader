@@ -29,14 +29,13 @@ def add_feed_to_update_queue(feed):
     enqueue(update_feed_wrapper, feed.id)
 
 def subscribe_to_url(url, user_id):
-    result = Feed.query.filter_by(url=url, user_id=user_id).scalar()
-    if not result:
+    feed = Feed.query.filter_by(url=url, user_id=user_id).scalar()
+    if not feed:
         feed = Feed(url=url, user_id=user_id)
         db.session.add(feed)
         db.session.commit()
         feed.update()
-        return feed
-    return False
+    return feed
 
 def import_opml(user_id, opml_url=None, data=None):
     outline = None
