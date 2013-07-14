@@ -6,55 +6,42 @@ define([
     'jquery-upload'
 ], function($, _, Backbone) {
     var SubscriptionWidget = Backbone.View.extend({
-        tagName: 'li',
-
-        link_template: _.template('<a href="#">Subscribe to feed...</a>'),
-
-        form_template: _.template($('#subscription-form').html()),
+        el: $('#subscription-form'),
 
         events: {
-            'click a': 'onClick'
+            'submit #url-form': 'submitUrl',
+            'change #opml-form :file': 'submitOpml'
         },
 
         initialize: function(options) {
-            _.bindAll(this, 'render', 'onClick');
+            _.bindAll(this, 'show', 'submitUrl', 'submitOpml');
         },
 
-        render: function() {
-            this.$el.html(this.link_template());
-            return this;
-        },
-
-        onClick: function() {
+        submitUrl: function() {
+            // TODO: validate enetered url, both on client and server?
             var self = this;
-            var modalForm = $(this.form_template());
-            modalForm.on('hidden', function(e) {
-                modalForm.remove();
-            });
-            modalForm.on('shown', function(e) {
-                modalForm.find('#url').focus();
-            });
-            modalForm.find('#url-form').submit(function(e) {
-                // TODO: validate enetered url, both on client and server?
-                if (modalForm.find('#url').is(':invalid')) {
-                    return false;
-                }
-                self.collection.create({
-                    url: modalForm.find('#url').val()
-                }, {
-                    wait: true
-                });
-                modalForm.modal('hide');
-            });
-            modalForm.find('#opml-form').find(':file').change(function(e) {
-                // FIXME: user relative url, not /upload_opml
-                $(this).upload('/upload_opml', function(res) {
-                });
-                modalForm.modal('hide');
+            if (this.$('#url').is(':invalid')) {
                 return false;
+            }
+            self.collection.create({
+                url: self.$('#url').val()
+            }, {
+                wait: true
             });
-            modalForm.modal('show');
+            this.$el.modal('hide');
             return false;
+        },
+
+        submitOpml: function() {
+            // FIXME: user relative url, not /upload_opml
+            this.$('input:file').upload('/upload_opml', function(res) {
+            });
+            this.$el.modal('hide');
+            return false;
+        },
+
+        show: function() {
+            this.$el.modal('show');
         }
     });
 
