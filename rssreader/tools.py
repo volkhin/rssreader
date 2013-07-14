@@ -28,20 +28,27 @@ def add_feed_to_update_queue(feed):
     # TODO: catch exception if redis is unavailable
     enqueue(update_feed_wrapper, feed.id)
 
-def import_opml(user_id, url=None, data=None):
+def subscribe_to_url(url, user_id):
+    result = Feed.query.filter_by(url=url, user_id=user_id).scalar()
+    if not result:
+        feed = Feed(url=url, user_id=user_id)
+        db.session.add(feed)
+        db.session.commit()
+        feed.update()
+        return feed
+    return False
+
+def import_opml(user_id, opml_url=None, data=None):
     outline = None
-    if url is not None:
-        outline = opml.parse(url)
+    if opml_url is not None:
+        outline = opml.parse(opml_url)
     if data is not None:
         outline = opml.from_string(data)
     outline = outline or []
     for entry in outline:
-        rss_url = entry.xmlUrl
-        print rss_url
-        feed = Feed(url=rss_url, user_id=user_id)
-        db.session.add(feed)
-        db.session.commit()
-        feed.update()
+        url = entry.xmlUrl
+        print url
+        subscribe_to_url(url, user_id)
 
 def enqueue(func, *args):
     q = Queue(connection=Redis(**config.REDIS_CONNECTION_OPTIONS))

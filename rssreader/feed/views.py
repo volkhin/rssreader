@@ -4,7 +4,7 @@ from flask import Blueprint, request, abort, json
 from flask.ext.login import current_user, login_required
 from flask.views import MethodView
 
-from ..tools import add_feed_to_update_queue
+from ..tools import add_feed_to_update_queue, subscribe_to_url
 from ..database import db
 from .models import Feed, FeedEntry
 
@@ -14,8 +14,6 @@ feed_blueprint = Blueprint('feeds', __name__)
 class EntriesView(MethodView):
     def get(self, entry_id):
         query = FeedEntry.query.join(Feed).filter(Feed.user_id==current_user.get_id())
-        # if 'feed_id' in data:
-            # query = query.filter(Feed.id==data['feed_id'])
         if entry_id is not None:
             query = query.filter(FeedEntry.id==entry_id)
         feed_id = request.args.get('feed_id', None)
@@ -36,7 +34,6 @@ class EntriesView(MethodView):
         pass
 
     def put(self, entry_id):
-        # entry = FeedEntry.query.get(request.values['entry_id'])
         received_obj = json.loads(request.data)
         FeedEntry.query.filter_by(id=entry_id).update(received_obj)
         db.session.commit()
@@ -66,11 +63,10 @@ class FeedsView(MethodView):
 
     def post(self):
         data = json.loads(request.data)
-        feed = Feed(title=data['title'], url=data['url'],
-                user_id=current_user.get_id())
-        db.session.add(feed)
-        db.session.commit()
-        add_feed_to_update_queue(feed)
+        url = data['url']
+        feed = subscribe_to_url(url, current_user.get_id())
+        if feed:
+            add_feed_to_update_queue(feed)
         return json.dumps(feed)
 
     def put(self, feed_id):
@@ -89,21 +85,3 @@ feed_blueprint.add_url_rule('/api/1/feeds', view_func=feeds_view,
         methods=['POST',])
 feed_blueprint.add_url_rule('/api/1/feeds/<int:feed_id>', view_func=feeds_view,
         methods=['GET', 'PUT', 'DELETE',])
-
-
-@feed_blueprint.route('/subscribe', methods=['POST'])
-@login_required
-def subscribe():
-    form = SubscribeForm()
-    if form.validate_on_submit():
-        rss_url = request.form['url']
-        feed = Feed.query.filter_by(url=rss_url, user_id=current_user.id).first()
-        if feed is None:
-            feed = Feed(rss_url, current_user.id)
-            db.session.add(feed)
-            db.session.commit()
-            feed.update()
-            return "OK"
-        else:
-            return "Feed already exists"
-    abort(400)

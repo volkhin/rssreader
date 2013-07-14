@@ -17,7 +17,7 @@ class FeedEntry(db.Model):
     created_at = db.Column(db.JSONDateTime)
     read = db.Column(db.Boolean, default=False)
     starred = db.Column(db.Boolean, default=False)
-    db.UniqueConstraint('url', 'user_id')
+    __table_args__ = (db.UniqueConstraint('url', 'feed_id'),)
 
     def __repr__(self):
         return '<FeedEntry {}>'.format(self.id)
@@ -47,7 +47,7 @@ class Feed(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     entries = db.relationship('FeedEntry', backref=db.backref('feed'), lazy='dynamic')
     unread_count = db.Column(db.Integer, default=0)
-    db.UniqueConstraint('url', 'user_id') # FIXME: looks like it doesn't work
+    __table_args__ = (db.UniqueConstraint('url', 'user_id'),)
 
     def get_title(self):
         return self.title or self.url
@@ -74,7 +74,7 @@ class Feed(db.Model):
                     content += part.value
             content = clean_text(content)
             content = u'<div>{}</div>'.format(content)
-            result = FeedEntry.query.filter_by(url=url).scalar()
+            result = FeedEntry.query.filter_by(url=url, feed_id=self.id).scalar()
             if not result:
                 feed_entry = FeedEntry(
                         url=url,
@@ -82,8 +82,8 @@ class Feed(db.Model):
                         content=content,
                         created_at=created_at,
                         feed=self)
-                db.session.add(feed_entry)
-        db.session.commit()
+                db.session.merge(feed_entry)
+                db.session.commit()
 
     def get_entries_count(self):
         return self.entries.count()
