@@ -36,28 +36,11 @@ class SettingsView(MethodView):
 
     def put(self):
         received_obj = json.loads(request.data)
-        User.query.filter_by(id=current_user.id).update(received_obj)
+        User.query.filter_by(id=current_user.get_id()).update(received_obj)
         db.session.commit()
-        return json.dumps(received_obj)
+        return json.dumps(User.query.get(current_user.get_id()))
 
 
 settings_view = login_required(SettingsView.as_view('settings_api1'))
 user_blueprint.add_url_rule('/api/1/settings', view_func=settings_view,
         methods=['GET', 'PUT'])
-
-
-@user_blueprint.route('/settings/show_read', endpoint='settings_show_read',
-        methods=['POST'], defaults={'action': 'show_read'})
-@user_blueprint.route('/settings/hide_read', endpoint='settings_hide_read',
-        methods=['POST'], defaults={'action': 'hide_read'})
-@login_required
-def change_settings(**kws):
-    if 'action' in kws:
-        action = kws['action']
-        if action == 'show_read':
-            current_user.show_read = True
-            db.session.commit()
-        elif action == 'hide_read':
-            current_user.show_read = False
-            db.session.commit()
-    return "OK"
