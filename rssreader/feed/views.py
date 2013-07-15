@@ -73,7 +73,6 @@ class FeedsView(MethodView):
         pass
 
     def delete(self, feed_id):
-        # TODO: delete all entries for this feed
         Feed.query.filter_by(id=feed_id).delete()
         db.session.commit()
         return '{}'
