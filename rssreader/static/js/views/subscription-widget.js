@@ -15,7 +15,7 @@ define([
         },
 
         initialize: function(options) {
-            _.bindAll(this, 'show', 'submitUrl', 'submitOpml');
+            _.bindAll(this, 'show');
         },
 
         onFormShown: function() {

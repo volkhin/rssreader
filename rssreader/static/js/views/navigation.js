@@ -15,7 +15,7 @@ define([
         },
 
         initialize: function(options) {
-            _.bindAll(this, 'subscriptionWidgetShow', 'updateFeeds', 'refresh', 'render', 'manageFeeds');
+            _.bindAll(this, 'refresh', 'render');
             this.settings = options.settings;
             this.feeds = options.feeds;
             this.entries = options.entries;

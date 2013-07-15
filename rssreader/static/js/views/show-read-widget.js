@@ -14,7 +14,7 @@ define([
         },
 
         initialize: function() {
-            _.bindAll(this, 'render', 'showRead', 'hideRead');
+            _.bindAll(this, 'render');
             this.listenTo(this.model, 'change:show_read', this.render);
         },
 

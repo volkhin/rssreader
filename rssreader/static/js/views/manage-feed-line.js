@@ -13,7 +13,7 @@ define([
         },
 
         initialize: function() {
-            _.bindAll(this, 'render', 'remove_feed');
+            _.bindAll(this, 'render');
         },
 
         render: function() {
