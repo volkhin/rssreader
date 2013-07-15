@@ -10,11 +10,16 @@ define([
 
         events: {
             'submit #url-form': 'submitUrl',
-            'change #opml-form :file': 'submitOpml'
+            'change #opml-form :file': 'submitOpml',
+            'shown': 'onFormShown'
         },
 
         initialize: function(options) {
             _.bindAll(this, 'show', 'submitUrl', 'submitOpml');
+        },
+
+        onFormShown: function() {
+            this.$('#url').focus();
         },
 
         submitUrl: function() {
