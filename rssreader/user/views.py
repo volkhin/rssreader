@@ -6,6 +6,7 @@ from flask.views import MethodView
 from .forms import LoginForm
 from .models import User
 from ..database import db
+from ..extensions import api_login_required
 
 
 user_blueprint = Blueprint('user', __name__)
@@ -41,6 +42,6 @@ class SettingsView(MethodView):
         return json.dumps(User.query.get(current_user.get_id()))
 
 
-settings_view = login_required(SettingsView.as_view('settings_api1'))
+settings_view = api_login_required(SettingsView.as_view('settings_api1'))
 user_blueprint.add_url_rule('/api/1/settings', view_func=settings_view,
         methods=['GET', 'PUT'])
