@@ -4,7 +4,7 @@ from flask import Blueprint, request, abort, json
 from flask.ext.login import current_user
 from flask.views import MethodView
 
-from ..tools import add_feed_to_update_queue, subscribe_to_url, import_opml
+from ..tools import add_feed_to_update_queue, subscribe_to_url, import_opml, fetch_feeds
 from ..extensions import api_login_required
 from ..database import db
 from .models import Feed, FeedEntry

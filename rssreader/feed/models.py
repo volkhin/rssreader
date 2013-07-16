@@ -10,8 +10,8 @@ from ..database import db
 class FeedEntry(db.Model):
     __tablename__ = 'feed_entries'
     id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(256), index=True)
-    title = db.Column(db.String(256))
+    url = db.Column(db.String(1024), index=True)
+    title = db.Column(db.Text)
     content = db.Column(db.Text)
     feed_id = db.Column(db.Integer, db.ForeignKey('feeds.id', ondelete='CASCADE'))
     created_at = db.Column(db.JSONDateTime)
@@ -43,8 +43,8 @@ class Feed(db.Model):
     __tablename__ = 'feeds'
     _additional_fields = ['unread_entries_count',]
     id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(256), db.CheckConstraint('length(url)>1'))
-    title = db.Column(db.String(256))
+    url = db.Column(db.String(1024), db.CheckConstraint('length(url)>1'))
+    title = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     entries = db.relationship('FeedEntry', backref=db.backref('feed'),
             lazy='dynamic', cascade='all, delete-orphan', passive_deletes=True)
@@ -88,7 +88,6 @@ class Feed(db.Model):
                 db.session.merge(feed_entry)
                 self.entries.append(feed_entry)
                 db.session.commit()
-        self.update_unread_count()
 
     def get_entries_count(self):
         return self.entries.count()

@@ -2,8 +2,6 @@
 from flask import Blueprint, render_template, request
 from flask.ext.login import current_user, login_required
 
-from ..tools import fetch_feeds, import_opml
-
 
 frontend_blueprint = Blueprint('frontend', __name__)
 
