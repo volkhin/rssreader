@@ -32,3 +32,12 @@
 .entry > .entry-title.unread {
     font-weight: bold;
 }
+
+.form-signin {
+    max-width: 300px;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px #ddd solid;
+    margin: 40px auto;
+    text-align: center;
+}

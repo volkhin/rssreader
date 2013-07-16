@@ -4,8 +4,10 @@
         <title>RSS Reader</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block css %}
         <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" media="screen">
         <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" media="screen">
+        {% endblock %}
 
         <script>
             showNotification = function(text) {
@@ -32,10 +34,10 @@
                     <p class="navbar-text pull-right">
                     {% if current_user.is_authenticated() %}
                     logged as {{ current_user.login }}
-                    <a href="{{ url_for('user.logout') }}">Log out</a>
+                    <a href="/logout" data-bypass>Log out</a>
                     </p>
                     {% else %}
-                    <a href="{{ url_for('user.login') }}">Log in</a>
+                    <a href="/login" data-bypass>Log in</a>
                     {% endif %}
                 </div>
             </div>
