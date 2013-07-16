@@ -11,4 +11,4 @@ frontend_blueprint = Blueprint('frontend', __name__)
 def index():
     if current_user.is_authenticated():
         return render_template('index.html')
-    return "Landing page"
+    return render_template('intro.html')

@@ -1,0 +1,48 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+{{ super() }}
+<style>
+    body {
+        background-color: #fcfcfc;
+    }
+
+    .container-narrow {
+        width: 600px;
+        margin: 0 auto;
+    }
+
+    .huge-header {
+        text-align: center;
+        margin: 60px 0;
+    }
+
+    .huge-header h1 {
+        font-size: 72px;
+        line-height: 1;
+    }
+</style>
+{% endblock %}
+
+{% block navbar_header %}
+{% endblock %}
+
+{% block body %}
+<div class="container-narrow">
+    <div class="huge-header">
+        <h1>RSS Reader</h1>
+        <p class="lead">
+        It's an RSS aggregator application that let you read and sync your
+        favourites feeds and use different clients.
+        </p>
+    </div>
+
+    <form class="form-signin" method="post" action="/login">
+        <input type="text" class="input-block-level" placeholder="Login"
+        id="login" name="login" required>
+        <input type="password" class="input-block-level" placeholder="Password"
+        id="password" name="password" required>
+        <input type="submit" class="btn btn-large btn-primary" value="Sign in">
+    </form>
+</div>
+{% endblock %}

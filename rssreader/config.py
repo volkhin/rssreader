@@ -8,7 +8,6 @@ class BaseConfig(object):
     PROJECT_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
     DEBUG = False
     TESTING = False
-    # SQLALCHEMY_ECHO = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
     SECRET_KEY = 'sdfs3qere75tgubhhj'
     REDIS_CONNECTION_OPTIONS = {}
@@ -17,6 +16,7 @@ class DevelopmentConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_ECHO = True
     SQLALCHEMY_DATABASE_URI = 'postgresql://localhost:5432/rssreader'
+    CSRF_ENABLED = False
 
 class ProductionConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///production.db'
