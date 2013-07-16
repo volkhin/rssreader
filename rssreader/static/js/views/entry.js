@@ -1,8 +1,9 @@
 define([
     'jquery',
     'underscore',
-    'backbone'
-], function($, _, Backbone) {
+    'backbone',
+    'moment'
+], function($, _, Backbone, moment) {
     var EntryView = Backbone.View.extend({
         tagName: "div",
 
@@ -21,9 +22,7 @@ define([
         },
 
         render: function() {
-            var date = new Date(this.model.get('created_at')).toLocaleString();
-            var data = _.extend(this.model.toJSON(), {date: date});
-            var obj = $(this.template(data));
+            var obj = $(this.template(this.model.toJSON()));
             if (this.visible) {
                 obj.find('.entry-content').show();
             } else {

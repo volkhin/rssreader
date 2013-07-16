@@ -3,6 +3,7 @@
 <script type="text/tempalte" id="entry-view-template">
     <div class="entry">
         <span class="clickable entry-title <%= read ? 'read' : 'unread' %>"><%= title %></span>
+        <% var date = moment(new Date(created_at)).format('DD.MM.YY'); %>
         <span class="entry-date"><%= date %></span>
         <span class="entry-starred"><%= starred ? '[starred]' : '[not starred]' %></span>
         <span class="entry-read"><%= read ? '[read]' : '[not read]' %></span>
