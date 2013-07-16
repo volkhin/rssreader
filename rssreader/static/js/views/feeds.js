@@ -14,7 +14,7 @@ define([
             this.listenTo(this.collection, 'add', this.addOne);
         },
 
-        template: _.template('<li><a href="feeds/<%= id %>"><%- title || url %></a></li>'),
+        link_template: _.template($('#entry-nav-link').html()),
 
         render: function() {
             this.$el.empty();
@@ -23,7 +23,7 @@ define([
         },
 
         addOne: function(m) {
-            link_el = this.template(m.toJSON());
+            link_el = this.link_template(m.toJSON());
             this.$el.append(link_el);
         }
     });

@@ -41,13 +41,13 @@ class FeedEntry(db.Model):
 
 class Feed(db.Model):
     __tablename__ = 'feeds'
+    _additional_fields = ['unread_entries_count',]
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(256), db.CheckConstraint('length(url)>1'))
     title = db.Column(db.String(256))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     entries = db.relationship('FeedEntry', backref=db.backref('feed'),
             lazy='dynamic', cascade='all, delete-orphan', passive_deletes=True)
-    unread_count = db.Column(db.Integer, default=0)
     __table_args__ = (db.UniqueConstraint('url', 'user_id'),)
 
     def get_title(self):
@@ -84,12 +84,15 @@ class Feed(db.Model):
                         title=title,
                         content=content,
                         created_at=created_at,
-                        feed=self)
+                        )
                 db.session.merge(feed_entry)
+                self.entries.append(feed_entry)
                 db.session.commit()
+        self.update_unread_count()
 
     def get_entries_count(self):
         return self.entries.count()
 
-    def get_unread_entries_count(self):
+    @property
+    def unread_entries_count(self):
         return self.entries.filter_by(read=False).count()

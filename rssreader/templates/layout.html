@@ -24,6 +24,11 @@
             <%= title %> - 
             <a href='#' class='remove-feed'>remove</a>
         </script>
+
+        <script type="text/template" id="entry-nav-link">
+            <li><a href="feeds/<%= id %>"><%- title || url %>(<%-
+                unread_entries_count %>)</a></li>
+        </script>
     </head>
     <body>
         {% block navbar_header %}
