@@ -10,6 +10,7 @@ def reset():
     '''
     Reset local env.
     '''
+    local('createdb rssreader')
     local('python manage.py initdb')
 
 def create_venv():
@@ -104,4 +105,7 @@ def setup():
     create_venv()
     activate_venv()
     local('python setup.py develop')
+    local('rm -rf postgresql_db')
+    local('mkdir postgresql_db')
+    local('initdb postgresql_db')
     reset()
