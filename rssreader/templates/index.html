@@ -1,24 +1,33 @@
 {% extends 'layout.html' %}
 {% block body %}
 <script type="text/tempalte" id="entry-view-template">
-    <div class="entry">
-        <span class="entry-read">
-            <% if (read) { %>
-                <i class="icon-eye-close" title="Mark unread"></i>
-            <% } else { %>
-                <i class="icon-empty" title="Mark unread"></i>
-            <% } %>
-        </span>
-        <span class="entry-starred">
-            <% if (starred) { %>
-                <i class="icon-star" title="Unstar"></i>
-            <% } else { %>
-                <i class="icon-star-empty" title="Star"></i>
-            <% } %>
-        </span>
-        <span class="clickable entry-title <%= read ? 'read' : 'unread' %>"><%= title %></span>
-        <% var date = moment(new Date(created_at)).format('DD.MM.YY'); %>
-        <span class="entry-date"><%= date %></span>
+    <div class="entry <%= read ? 'read' : 'unread' %>">
+        <div class="entry-heading ellipsis">
+            <% var date = moment(new Date(created_at)).format('DD.MM.YY'); %>
+            <span class="entry-date ellipsis-full"><%= date %></span>
+
+            <div class="ellipsis-clipped">
+                <span class="entry-read">
+                    <% if (read) { %>
+                        <i class="icon-eye-close" title="Mark unread"></i>
+                        <% } else { %>
+                        <i class="icon-empty" title="Mark unread"></i>
+                        <% } %>
+                </span>
+
+                <span class="entry-starred">
+                    <% if (starred) { %>
+                        <i class="icon-star" title="Unstar"></i>
+                        <% } else { %>
+                        <i class="icon-star-empty" title="Star"></i>
+                        <% } %>
+                </span>
+
+                <span class="clickable entry-title">
+                    <%= title %>
+                </span>
+            </div>
+        </div>
         <div class="well entry-content hidden">
             <%= content %>
         </div>

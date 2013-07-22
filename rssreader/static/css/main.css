@@ -29,7 +29,11 @@
     cursor: pointer;
 }
 
-.entry > .entry-title.unread {
+.entry.read .entry-heading {
+    color: #666666;
+}
+
+.entry.unread .entry-title {
     font-weight: bold;
 }
 
