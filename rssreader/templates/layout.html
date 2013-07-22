@@ -26,8 +26,14 @@
         </script>
 
         <script type="text/template" id="entry-nav-link">
-            <li><a href="feeds/<%= id %>"><%- title || url %>(<%-
-                unread_entries_count %>)</a></li>
+            <li class="ellipsis">
+                <span class="ellipsis-full">
+                    <%- unread_entries_count %>
+                </span>
+                <a href="feeds/<%= id %>" class="ellipsis-clipped">
+                    <%- title || url %>
+                </a>
+            </li>
         </script>
     </head>
     <body>
