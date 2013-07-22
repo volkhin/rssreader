@@ -36,14 +36,24 @@
             <div class="navbar-inner">
                 <div class="container">
                     <a class="brand" href="{{ url_for('frontend.index') }}">RSS Reader </a>
-                    <p class="navbar-text pull-right">
-                    {% if current_user.is_authenticated() %}
-                    logged as {{ current_user.login }}
-                    <a href="/logout" data-bypass>Log out</a>
-                    </p>
-                    {% else %}
-                    <a href="/login" data-bypass>Log in</a>
-                    {% endif %}
+                    <!-- <p class="navbar-text pull-right"> -->
+                    <ul class="nav pull-right">
+                        {% if current_user.is_authenticated() %}
+                        <li>
+                            <p class="navbar-text">
+                            <i class="icon-user icon-white"></i> {{ current_user.login }}
+                            </p>
+                        </li>
+                        <li>
+                            <a href="/logout" data-bypass>Log out</a>
+                        </li>
+                        {% else %}
+                        <li>
+                            <a href="/login" data-bypass>Log in</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    <!-- </p> -->
                 </div>
             </div>
         </div>
