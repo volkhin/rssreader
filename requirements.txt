@@ -12,3 +12,6 @@ bleach
 SQLAlchemy
 iso8601
 psycopg2
+dop
+fabric
+fabtools
