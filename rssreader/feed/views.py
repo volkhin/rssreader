@@ -1,5 +1,4 @@
 #-*- coding: utf-8 -*-
-from .forms import SubscribeForm
 from flask import Blueprint, request, abort, json
 from flask.ext.login import current_user
 from flask.views import MethodView
