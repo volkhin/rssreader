@@ -29,6 +29,25 @@
     cursor: pointer;
 }
 
+.entry {
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    margin-top: -1px;
+}
+
+.entry-container:first-child .entry {
+    border-top: 0;
+}
+
+.entry-container:last-child .entry {
+    border-bottom: 0;
+}
+
+.entry-heading {
+    height: 25px;
+    line-height: 25px;
+}
+
 .entry.read .entry-heading {
     color: #666666;
 }

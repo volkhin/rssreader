@@ -7,6 +7,8 @@ define([
     var EntryView = Backbone.View.extend({
         tagName: "div",
 
+        className: 'entry-container',
+
         template: _.template($('#entry-view-template').html()),
 
         events: {
@@ -37,7 +39,9 @@ define([
             this.visible = !this.visible;
             if (this.visible) {
                 this.$('.entry-content').show();
-                this.model.save({ read: true });
+                if (this.model.get('read') !== true) {
+                    this.model.save({ read: true });
+                }
             } else {
                 this.$('.entry-content').hide();
             }
