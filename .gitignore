@@ -8,3 +8,4 @@ venv
 *.sqlite
 *rdb
 postgresql_db
+logs/*
