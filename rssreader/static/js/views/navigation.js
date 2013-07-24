@@ -3,11 +3,12 @@ define([
     'underscore',
     'backbone',
     'mediator',
+    'utils',
     'views/subscription-widget',
     'views/manage-feeds-widget',
     'views/show-read-widget',
     'mousetrap'
-], function($, _, Backbone, Mediator, SubscriptionWidget, ManageFeedsWidget,
+], function($, _, Backbone, Mediator, Utils, SubscriptionWidget, ManageFeedsWidget,
     ShowReadWidget, Mousetrap) {
     var NavigationView = Backbone.View.extend({
         events: {
@@ -42,6 +43,7 @@ define([
                     var tagName = obj.prop('tagName');
                     if (tagName === 'A') {
                         obj.click();
+                        Utils.highlight(obj);
                     }
                 });
             });

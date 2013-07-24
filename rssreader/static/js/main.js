@@ -6,6 +6,7 @@ require.config({
         'underscore': 'libs/underscore',
         'backbone': 'libs/backbone',
         'jquery-upload': 'libs/jquery.upload-1.0.2',
+        'jquery-color': 'libs/jquery.color',
         'moment': 'libs/moment',
         'mousetrap': 'libs/mousetrap'
     },
