@@ -62,7 +62,13 @@ define([
         },
 
         refreshPage: function(options) {
-            this.navigate(document.location.hash, options);
+            // TODO: move out to separate method?
+            var settings_task = this.settings.fetch({reset: true});
+            var feeds_task = this.feeds.fetch({reset: true});
+            var self = this;
+            $.when(settings_task, feeds_task).then(function(o, o2) {
+                self.navigate(document.location.hash, options);
+            });
         },
 
         navigate: function(fragment, options) {
