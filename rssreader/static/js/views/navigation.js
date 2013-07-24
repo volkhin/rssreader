@@ -2,11 +2,12 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'mediator',
     'views/subscription-widget',
     'views/manage-feeds-widget',
     'views/show-read-widget',
     'mousetrap'
-], function($, _, Backbone, SubscriptionWidget, ManageFeedsWidget,
+], function($, _, Backbone, Mediator, SubscriptionWidget, ManageFeedsWidget,
     ShowReadWidget, Mousetrap) {
     var NavigationView = Backbone.View.extend({
         events: {
@@ -34,7 +35,6 @@ define([
             this.$el.append($('<li><i class="icon-refresh"></i>&nbsp;<a class="refresh" data-mousetrap="r" href="">Refresh</a></li>'));
             this.$el.append($('<li><i class="icon-home"></i>&nbsp;<a class="show_all" data-mousetrap="g a" href="/">All entries</a></li>'));
             this.$el.append($('<li><i class="icon-star"></i>&nbsp;<a class="show_starred" data-mousetrap="g s" href="feeds/starred">Show starred</a></li>'));
-            Mousetrap.bind('g i', function() { console.log('go to inbox'); });
             $('[data-mousetrap]').each(function() {
                 var key = $(this).attr('data-mousetrap');
                 var obj = $(this);
@@ -68,7 +68,7 @@ define([
         },
 
         refresh: function() {
-            // App.router.refreshPage(true);// FIXME:
+            Mediator.trigger('refresh', true);
             return false;
         }
     });

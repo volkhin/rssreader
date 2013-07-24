@@ -1,8 +1,9 @@
 define([
     'jquery',
     'underscore',
-    'backbone'
-], function($, _, Backbone) {
+    'backbone',
+    'mediator'
+], function($, _, Backbone, Mediator) {
     var ShowReadWidget = Backbone.View.extend({
         tagName: 'li',
 
@@ -37,7 +38,7 @@ define([
         showRead: function(e) {
             this.model.save({show_read: true}, {
                 success: function() {
-                    // App.router.refreshPage(true);// FIXME
+                    Mediator.trigger('refresh', true);
                 }
             });
             return false;
@@ -46,7 +47,7 @@ define([
         hideRead: function(e) {
             this.model.save({show_read: false}, {
                 success: function() {
-                    // App.router.refreshPage(true);// FIXME
+                    Mediator.trigger('refresh', true);
                 }
             });
             return false;

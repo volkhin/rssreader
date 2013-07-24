@@ -2,13 +2,14 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'mediator',
     'models/settings',
     'collections/feeds',
     'views/feeds',
     'collections/entries',
     'views/entries',
     'views/navigation',
-], function($, _, Backbone, Settings, FeedsList, FeedsView, EntriesList,
+], function($, _, Backbone, Mediator, Settings, FeedsList, FeedsView, EntriesList,
     EntriesView, NavigationView) {
     var MainRouter = Backbone.Router.extend({
         routes: {
@@ -19,6 +20,7 @@ define([
 
         initialize: function() {
             _.bindAll(this, 'refreshPage', 'navigate');
+            this.listenTo(Mediator, 'refresh', this.refreshPage);
 
             // Loading models and collections
             this.settings = new Settings();
