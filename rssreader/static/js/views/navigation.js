@@ -4,8 +4,10 @@ define([
     'backbone',
     'views/subscription-widget',
     'views/manage-feeds-widget',
-    'views/show-read-widget'
-], function($, _, Backbone, SubscriptionWidget, ManageFeedsWidget, ShowReadWidget) {
+    'views/show-read-widget',
+    'mousetrap'
+], function($, _, Backbone, SubscriptionWidget, ManageFeedsWidget,
+    ShowReadWidget, Mousetrap) {
     var NavigationView = Backbone.View.extend({
         events: {
             'click .subscribe': 'subscriptionWidgetShow',
@@ -26,12 +28,23 @@ define([
         render: function() {
             this.$el.children().detach();
             this.$el.append(this.showReadWidget.render().$el);
-            this.$el.append($('<li><i class="icon-plus"></i>&nbsp;<a class="subscribe" href="">Subscribe to feed...</a></li>'));
+            this.$el.append($('<li><i class="icon-plus"></i>&nbsp;<a class="subscribe" data-mousetrap="a" href="">Subscribe to feed...</a></li>'));
             this.$el.append($('<li><i class="icon-pencil"></i>&nbsp;<a class="manage-feeds" href="">Manage feeds...</a></li>'));
             this.$el.append($('<li><i class="icon-tasks"></i>&nbsp;<a class="update_feeds" href="">Update feeds</a></li>'));
-            this.$el.append($('<li><i class="icon-refresh"></i>&nbsp;<a class="refresh" href="">Refresh</a></li>'));
-            this.$el.append($('<li><i class="icon-home"></i>&nbsp;<a class="show_all" href="/">All entries</a></li>'));
-            this.$el.append($('<li><i class="icon-star"></i>&nbsp;<a class="show_starred" href="feeds/starred">Show starred</a></li>'));
+            this.$el.append($('<li><i class="icon-refresh"></i>&nbsp;<a class="refresh" data-mousetrap="r" href="">Refresh</a></li>'));
+            this.$el.append($('<li><i class="icon-home"></i>&nbsp;<a class="show_all" data-mousetrap="g a" href="/">All entries</a></li>'));
+            this.$el.append($('<li><i class="icon-star"></i>&nbsp;<a class="show_starred" data-mousetrap="g s" href="feeds/starred">Show starred</a></li>'));
+            Mousetrap.bind('g i', function() { console.log('go to inbox'); });
+            $('[data-mousetrap]').each(function() {
+                var key = $(this).attr('data-mousetrap');
+                var obj = $(this);
+                Mousetrap.bind(key, function() {
+                    var tagName = obj.prop('tagName');
+                    if (tagName === 'A') {
+                        obj.click();
+                    }
+                });
+            });
             return this;
         },
 
