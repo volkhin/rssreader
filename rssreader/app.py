@@ -39,7 +39,6 @@ def create_app():
     app = Flask(__name__, static_folder='static', static_url_path='') # FIXME: is it correct name?
 
     app.config.from_object(config)
-    print app.static_folder, app.static_url_path
 
     for blueprint in blueprints:
         app.register_blueprint(blueprint)
