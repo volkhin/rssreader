@@ -52,7 +52,7 @@ def import_opml(user_id, opml_url=None, data=None):
 def enqueue(func, *args):
     q = Queue(connection=Redis(**config.REDIS_CONNECTION_OPTIONS))
     try:
-        j = q.enqueue(func, *args)
-        print j
+        job = q.enqueue(func, *args)
+        print job
     except redis.exceptions.ConnectionError, e:
         logging.error('Redis connection error: %s', e)
