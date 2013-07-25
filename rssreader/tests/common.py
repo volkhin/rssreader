@@ -35,11 +35,12 @@ class TestCase(Base):
     def _fill_db(self):
         user = User(login='admin', password='admin')
         db.session.add(user)
+        db.session.commit()
         feed = Feed(url='feed_url', user_id=user.id)
-        entry1 = FeedEntry(url='test_url1', title='title1', content='content1', feed=feed)
-        entry2 = FeedEntry(url='test_url2', title='title2', content='content2', feed=feed)
         db.session.add(feed)
+        db.session.commit()
+        entry1 = FeedEntry(url='test_url1', title='title1', content='content1', feed_id=feed.id)
+        entry2 = FeedEntry(url='test_url2', title='title2', content='content2', feed_id=feed.id)
         db.session.add(entry1)
         db.session.add(entry2)
         db.session.commit()
-
