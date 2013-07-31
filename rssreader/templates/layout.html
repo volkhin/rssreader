@@ -39,28 +39,26 @@
     <body>
         {% block navbar_header %}
         <div class="navbar navbar-inverse navbar-static-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <a class="brand" href="{{ url_for('frontend.index') }}">RSS Reader </a>
-                    <!-- <p class="navbar-text pull-right"> -->
-                    <ul class="nav pull-right">
-                        {% if current_user.is_authenticated() %}
-                        <li>
-                            <p class="navbar-text">
-                            <i class="icon-user icon-white"></i> {{ current_user.login }}
-                            </p>
-                        </li>
-                        <li>
-                            <a href="/logout" data-bypass>Log out</a>
-                        </li>
-                        {% else %}
-                        <li>
-                            <a href="/login" data-bypass>Log in</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                    <!-- </p> -->
-                </div>
+            <div class="container">
+                <a class="navbar-brand" href="{{ url_for('frontend.index') }}">RSS Reader </a>
+                <!-- <p class="navbar-text pull-right"> -->
+                <ul class="nav navbar-nav pull-right">
+                    {% if current_user.is_authenticated() %}
+                    <li>
+                        <p class="navbar-text">
+                        <i class="icon-user icon-white"></i> {{ current_user.login }}
+                        </p>
+                    </li>
+                    <li>
+                        <a href="/logout" data-bypass>Log out</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a href="/login" data-bypass>Log in</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <!-- </p> -->
             </div>
         </div>
         {% endblock %}
@@ -77,42 +75,54 @@
             {% endblock %}
         </div>
 
-        <div id="subscription-form" class="modal hide fade" tabindex=-1 role="dialog"
+        <div id="subscription-form" class="modal fade" tabindex=-1 role="dialog"
             aria-labelledby="modal-form-title" aria-hidden="true">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"
-                    aria-hidden="true">&times;</button>
-                <h3 class="modal-title" id="modal-form-title">Add
-                    subscription</h3>
-            </div>
-            <div class="modal-body">
-                <form class="form-inline" id="url-form">
-                    <label for="url">Subscribe to url:</label>
-                    <input type="url" placeholder="Url" id="url" required>
-                    <button type="submit" class="btn">Subscribe</button>
-                </form>
-                <hr>
-                <form class="form-inline" id="opml-form">
-                    <label for="opml">Upload OPML:</label>
-                    <input type="file" id="opml" name="opml" accept="text/xml" required>
-                </form>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">&times;</button>
+                        <h3 class="modal-title" id="modal-form-title">Add
+                            subscription</h3>
+                    </div>
+                    <div class="modal-body">
+                        <form id="url-form">
+                            <div class="form-group">
+                            <label for="url">Subscribe to url:</label>
+                                <input class="form-control" type="url" placeholder="Url" id="url" required>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn">Subscribe</button>
+                            </div>
+                        </form>
+                        <hr>
+                        <form class="form-inline" id="opml-form">
+                            <label for="opml">Upload OPML:</label>
+                            <input class="form-control" type="file" id="opml" name="opml" accept="text/xml" required>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div id="manage-feeds-form" class="modal hide fade" tabindex=-1 role="dialog"
+        <div id="manage-feeds-form" class="modal fade" tabindex=-1 role="dialog"
             aria-labelledby="modal-form-title" aria-hidden="true">
-            <form class="form-inline">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"
-                        aria-hidden="true">&times;</button>
-                    <h3 class="modal-title" id="modal-form-title">Manage
-                        subscriptions</h3>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form class="form-inline">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"
+                                aria-hidden="true">&times;</button>
+                            <h3 class="modal-title" id="modal-form-title">Manage
+                                subscriptions</h3>
+                        </div>
+                        <div class="modal-body">
+                            <ul>
+                            </ul>
+                        </div>
+                    </form>
                 </div>
-                <div class="modal-body">
-                    <ul>
-                    </ul>
-                </div>
-            </form>
+            </div>
         </div>
 
     </body>

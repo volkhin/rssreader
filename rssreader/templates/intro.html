@@ -38,11 +38,19 @@
     </div>
 
     <form class="form-signin" method="post" action="/login">
-        <input type="text" class="input-block-level" placeholder="Login"
+        <div class="form-group">
+        <input type="text" class="form-control" placeholder="Login"
         id="login" name="login" required>
-        <input type="password" class="input-block-level" placeholder="Password"
+        </div>
+
+        <div class="form-group">
+        <input type="password" class="form-control" placeholder="Password"
         id="password" name="password" required>
-        <input type="submit" class="btn btn-large btn-primary" value="Sign in">
+        </div>
+
+        <div class="form-group">
+        <input type="submit" class="btn btn-success" value="Sign in">
+        </div>
     </form>
 </div>
 {% endblock %}
